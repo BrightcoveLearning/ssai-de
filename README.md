@@ -1,1 +1,1 @@
-# ssai-de
+# ssai

@@ -1,344 +1,66 @@
-﻿<!doctype html>
-<html lang="de">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="In diesem Thema erfahren Sie, wie Sie einen Live-Stream mit serverseitigen Anzeigen erstellen, der Player-Enhancements for Live SSAI für eine verbesserte Benutzererfahrung verwendet.">
-  
-  <title>Implementieren von Spieler-Erweiterungen für Live-SSAI</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">  
-  <link data-react-helmet="true" rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&amp;display=swap">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://support.brightcove.com/site-assets/css/site/prism.css">
-  <link rel="stylesheet" href="https://support.brightcove.com/site-assets/css/site/styles.css">
-  <link rel="stylesheet" href="https://support.brightcove.com/site-assets/css/site/landing-page.css">
-  <link rel="stylesheet" href="https://support.brightcove.com/site-assets/css/site/tabs.css">
-  <link rel="stylesheet" href="/assets/css/local.css">
-  <link data-react-helmet="true" rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&display=swap">
-  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/381443caa8.js" crossorigin="anonymous"></script>
-  <script src="https://support.brightcove.com/site-assets/js/site/google-analytics.js"></script>
-  <script src="/assets/js/sajari-head.js"></script>
-</head>
-
-<body class="body">
-
-<header>
-  <div class="div-header">
-    <a href="/"><span class="product-logo" style="font-family:'Balto Web','Public Sans';font-size:2em;font-weight:bold;">BRIGHTCOVE SSAI<sup>™</sup></span></a>
-<!-- GTranslate: https://gtranslate.io/ -->
-<select onchange="doGTranslate(this);"><option value="">Sprache wählen</option><option value="en|en" translate="No">English</option><option value="en|zh-TW" translate="No">繁體中文</option><option value="en|fr" translate="No">Français</option><option value="en|de" translate="No">Deutsche</option><option value="en|ja" translate="No">日本語</option><option value="en|ko" translate="No">한국어</option><option value="en|es" translate="No">Español</option></select>
-
-<script>
-/* <![CDATA[ */
-function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;if(lang_pair=='')return;var lang=lang_pair.split('|')[1];var plang=location.hostname.split('.')[0];if(plang.length !=2 && plang.toLowerCase() != 'zh-cn' && plang.toLowerCase() != 'zh-tw')plang='en';location.href=location.protocol+'//'+(lang == 'en' ? '' : lang+'.')+location.hostname.replace('www.', '').replace(RegExp('^' + plang + '\\.'), '')+location.pathname+location.search;}
-/* ]]> */
-</script>
-
-    
-
-
-    <span class="secondary-nav"><a href="https://supportportal.brightcove.com/s/login/?"><img src="https://support.brightcove.com/site-assets/images/site/support.png" alt="Support"/> Kontaktieren Sie Support</a> <span style="vertical-align: top;margin-left:1em;margin-right:1em;">|</span> <a href="https://status.brightcove.com/"><img src="https://support.brightcove.com/site-assets/images/site/status.png" alt="Systemstatus"/> Systemstatus</a></span> <br/>
-    
-  </div>
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb arr-right">
-      
-      <li class="breadcrumb-item"><a href="/">Nach Hause</a></li>
-      
-      
-      
-      <li class="breadcrumb-item"><a href="/live/guides/">leben</a></li>
-      
-      <li class="breadcrumb-item active" aria-current="page">Implementieren von Spieler-Erweiterungen für Live-SSAI</li>
-    </ol>
-  </nav>
-</header>
-<div class="container">
-    <div class="row">
-            <div class="col-sm-3 left-side-bar">
-        <select id="site_select" class="bcls-select" style="margin-right: 1rem;">
-          <option value="">Weitere Brightcove Docs</option>
-          
-            
-              <option value="https://support.brightcove.com">Dokumentation Home</option>
-            
-          
-            
-              <option value="https://audience.support.brightcove.com">Brightcove Publikum</option>
-            
-          
-            
-              <option value="https://beacon.support.brightcove.com">Brightcove Leuchtfeuer</option>
-            
-          
-            
-              <option value="https://campaign.support.brightcove.com">Brightcove Kampagne</option>
-            
-          
-            
-              <option value="https://engage.support.brightcove.com">Brightcove Engage</option>
-            
-          
-            
-              <option value="https://live.support.brightcove.com">Brightcove Live</option>
-            
-          
-            
-              <option value="https://gallery.support.brightcove.com">Brightcove Gallery</option>
-            
-          
-            
-              <option value="https://ssai.support.brightcove.com">Brightcove SSAI</option>
-            
-          
-            
-              <option value="https://social.support.brightcove.com">Brightcove Social</option>
-            
-          
-            
-              <option value="https://studio.support.brightcove.com">Video Cloud Studio</option>
-            
-          
-            
-              <option value="https://player.support.brightcove.com">Brightcove Spieler-Entwicklung</option>
-            
-          
-            
-              <option value="https://apis.support.brightcove.com">APIs für Video Cloud-Plattform</option>
-            
-          
-            
-              <option value="https://sdks.support.brightcove.com">Videocloud-Geräte-SDKs</option>
-            
-          
-            
-              <option value="https://integrations.support.brightcove.com">Integrationen und CMS-Konnektoren</option>
-            
-          
-            
-              <option value="https://general.support.brightcove.com">Video Cloud — Allgemeine Informationen</option>
-            
-          
-            
-              <option value="https://zencoder.support.brightcove.com">Zencoder</option>
-            
-          
-        </select>
-
-        <nav class="sidenav" id="side_nav">
-          
-            
-            <h5><a href="/index.html">Nach Hause</a></h5>
-            
-          
-            
-              <h5 class="submenu-header"><a href="/getting-started/index.html">Erste Schritte <strong>+</strong></a></h5>
-              <ul class="sidenav-submenu" style="display:none;">
-                
-                  
-                    <li><a href="/getting-started/video-cloud-ssai-overview.html">SSAI-Überblick</a></li>
-                  
-                
-                  
-                    <li><a href="https://studio.support.brightcove.com/admin/configuring-server-side-ad-settings.html">Konfigurieren der serverseitigen Anzeigeneinstellungen</a></li>
-                  
-                
-              </ul>
-            
-          
-            
-              <h5 class="submenu-header"><a href="/vod/guides/index.html">Video-On-Demand-Reiseführer <strong>+</strong></a></h5>
-              <ul class="sidenav-submenu" style="display:none;">
-                
-                  
-                    <li><a href="https://player.support.brightcove.com/plugins/implementing-server-side-ads-brightcove-player.html">Implementierung von SSAI mit dem Brightcove Player</a></li>
-                  
-                
-                  
-                    <li><a href="https://sdks.support.brightcove.com/features/implementing-server-side-ads-native-player-sdks.html">Implementierung von SSAI mit den Native SDKs</a></li>
-                  
-                
-                  
-                    <li><a href="/vod/guides/ssai-ad-block-detection-and-auto-failover.html">SSAI: Ja. Adblock-Erkennung und automatisches Failover</a></li>
-                  
-                
-                  
-                    <li><a href="/vod/guides/video-cloud-ssai-ad-config-api.html">Video Cloud SSAI Ad Config API</a></li>
-                  
-                
-                  
-                    <li><a href="/vod/guides/ad-error-beacons-ssai.html">Ad Error Beacons mit SSAI</a></li>
-                  
-                
-              </ul>
-            
-          
-            
-              <h5 class="submenu-header"><a href="/vod/references/index.html">Video-On-Demand-Referenzen <strong>+</strong></a></h5>
-              <ul class="sidenav-submenu" style="display:none;">
-                
-                  
-                    <li><a href="/vod/references/reference.html">SSAI API Referenz</a></li>
-                  
-                
-                  
-                    <li><a href="/vod/references/ssai-api-error-reference.html">SSAI API Fehlerreferenz</a></li>
-                  
-                
-                  
-                    <li><a href="https://player.support.brightcove.com/plugins/changelog/server-side-ads-plugin-changelog.html">Änderungsprotokoll für serverseitige Anzeigen-Plu</a></li>
-                  
-                
-              </ul>
-            
-          
-            
-              <h5 class="submenu-header"><a href="/live/guides/index.html">Live-Guides <strong>+</strong></a></h5>
-              <ul class="sidenav-submenu" style="display:none;">
-                
-                  
-                    <li><a href="https://live.support.brightcove.com/live-module/implementing-server-side-ads-live-module.html">Implementierung von SSAI im Live-Modul</a></li>
-                  
-                
-                  
-                    <li><a href="https://live.support.brightcove.com/live-api/ssai/live-api-server-side-ad-insertion-ssai.html">Brightcove Live-API: Serverseitige Anzeigeneinfügung (SSAI)</a></li>
-                  
-                
-                  
-                    <li><a href="https://live.support.brightcove.com/live-api/ssai/live-api-cue-points-and-ad-beacons-ssai.html">Live-API: Cue-Points und Ad Beacons mit SSAI</a></li>
-                  
-                
-                  
-                    <li><a href="https://player.support.brightcove.com/advertising/client-side-preroll-with-live-ssai.html">Clientseitige Preroll-Anzeigen mit Live SSAI</a></li>
-                  
-                
-                  
-                    <li><a href="/live/guides/overview-player-enhancements-live-ssai.html">Übersicht: Spieler-Verbesserungen für Live SSAI</a></li>
-                  
-                
-                  
-                    <li><a href="/live/guides/implementing-player-enhancements-live-ssai.html">Implementieren von Spieler-Erweiterungen für Live-SSAI</a></li>
-                  
-                
-              </ul>
-            
-          
-            
-              <h5 class="submenu-header"><a href="/live/references/index.html">Live-Referenzen <strong>+</strong></a></h5>
-              <ul class="sidenav-submenu" style="display:none;">
-                
-                  
-                    <li><a href="/live/references/reference.html">Live-API-Referenz</a></li>
-                  
-                
-                  
-                    <li><a href="https://live.support.brightcove.com/live-api/references/live-api-error-messages.html">Live-API: Fehler-Meldungen</a></li>
-                  
-                
-                  
-                    <li><a href="https://live.support.brightcove.com/release-notes/live-api-release-notes.html">Versionshinweise zur Live-</a></li>
-                  
-                
-              </ul>
-            
-          
-            
-              <h5 class="submenu-header"><a href="/support/index.html">Unterstützung von Entwicklern <strong>+</strong></a></h5>
-              <ul class="sidenav-submenu" style="display:none;">
-                
-                  
-                    
-                  
-                
-                  
-                    <li><a href="/support/viewing-brightcove-system-status-page.html">Anzeigen der Seite „Systemstatus von Brightcove“</a></li>
-                  
-                
-                  
-                    <li><a href="/support/contact-sales.html">Kontakt mit dem Vertrieb</a></li>
-                  
-                
-                  
-                    <li><a href="/support/opening-case-with-brightcove-support.html">Einen Supportfall öffnen</a></li>
-                  
-                
-              </ul>
-            
-          
-      </nav>
-    </div>
-    <div class="col-lg-7" style="background-color: white;color: #333333;margin-top: -1em;margin-bottom: -1em;padding-bottom:1em;">
-  <!-- bootstrap layout -->
-
-<p id="bc_veggie_burger_wrapper" style="display: none;"><img id="bc_veggie_burger" src="/assets/images/feather/menu.svg" alt="Menü „Navigation"/></p>
-
-<!-- search bar -->
-<div id="nav-search-box" style="margin-top: 1rem;"></div>
-<!-- in-page navigation for narrow screens -->
-<details class="centered-inpage-nav" id="centered_inpage_nav">
-  <summary><h6 class="toc">Inhalt der Seite</h6></summary>
-  <nav id="centered_toc"></nav>
-  <ul id="centered_in_page_toc" class="list-none"></ul>
-</details>
-<!-- open in new tab/window -->
-<a id="open_new_tab" href="#" target="_blank" style="display: none;"><img src="/assets/images/feather/external-link.svg" alt="in neuem Tab öffnen" style="margin-top:4em;width: 1.5em;"/></a>
-
-
-
-  
-    
-
-
-<h1>Implementieren von Spieler-Erweiterungen für Live-SSAI</h1>
+---
+title: 'Implementieren von Spielerverbesserungen für Live-SSAI' Bezeichnung: In diesem Thema erfahren Sie, wie Sie einen Livestream mit serverseitigen Anzeigen erstellen, der Player Enhancements for Live SSAI für eine verbesserte Benutzererfahrung verwendet.
+parent: Live
+---
+ <h1>{{ page.title }}</h1>
 <article class="bcls-article">
-  <summary>In diesem Thema erfahren Sie, wie Sie einen Live-Stream mit serverseitigen Anzeigen erstellen, der Player-Enhancements for Live SSAI für eine verbesserte Benutzererfahrung verwendet.</summary>
+  <summary>{{ page.description }}</summary>
 
 <section class="bcls-section">
-<h2 id="Introduction">Einführung</h2>
+<h2 id="Introduction">Einführung</h2> 
 
-<p>Die Player-Enhancements für Live SSAI von Brightcove ermöglicht es Ihnen, die Werbeunterbrechungen in Live-Streams mit Anzeigenzählungen, Countdown-Timern für Anzeigen, Durchklickungsanzeigen und Begleitanzeigen zu verbessern.</p>
+<p>Mit den Player-Verbesserungen von Brightcove für Live-SSAI können Sie die Werbeunterbrechungen in Live-Streams durch Anzeigenanzahl, Anzeigen-Countdown-Timer, Klickanzeigen und Begleitanzeigen verbessern.</p>
 
-<p>Ihre Anzeigeninformationen werden mithilfe einer Anzeigenkonfiguration angegeben, die umfangreiche Antworten abruft, um zu ermitteln, welche Anzeigen geschaltet werden sollen. Die VAST Datei enthält auch Informationen über Begleitanzeigen und Beacon-URLs.</p>
+<p>Ihre Anzeigeninformationen werden mithilfe einer Anzeigenkonfiguration angegeben, die VAST-Antworten abruft, um zu identifizieren, welche Anzeigen angezeigt werden sollen. Die VAST-Datei enthält auch Informationen zu Begleitanzeigen und Beacon-URLs.</p>
 
-<p>Wenn Sie mit SLS nicht vertraut sind, lesen Sie die <a href="https://live.support.brightcove.com/live-api/ssai/overview-player-enhancements-live-ssai.html">Übersicht: Spieler-Erweiterungen für Live SSAI-Dokument</a> .</p>
+<aside class="bcls-aside bcls-aside--information"> Derzeit ist diese Funktion nur für die folgenden Regionen verfügbar:
+  <ul>
+    <li>ap-südost-1 (Singapur)</li>
+    <li>ap-südost-2 (Sydney)</li>
+    <li>ap-nordost-1 (Tokio)</li>
+    <li>eu-central-1 (Frankfurt)</li>
+    <li>us-west-2 (Oregon)</li>
+  </ul>
+   Eine allgemeine Übersicht und andere Einschränkungen finden Sie in der <a href="https://ssai.support.brightcove.com/live/guides/overview-player-enhancements-live-ssai.html">Überblick: Spielerverbesserungen für</a> Live-SSAI-Dokument. </aside>
 </section>
 
 <section class="bcls-section">
-<h2 id="Workflow">Workflow</h2>
+<h2 id="Workflow">Arbeitsablauf</h2>
 
-<p>Gehen Sie folgendermaßen vor, um einen Livestream mit SSAI- und Spielerverbesserungen zu erstellen:</p>
+<p>Gehen Sie folgendermaßen vor, um einen Live-Stream mit SSAI- und Player-Verbesserungen zu erstellen:</p>
 
 <ol class="bcls-tasklist">
-	<li>Bitten Sie Ihren Kundenbetreuer, Ihr Konto für Live-Streams, Server-Side Ad Insertion (SSAI) und die Player Enhancements for Live SSAI zu aktivieren.</li>
-	<li><a href="#Create_an_ad_configuration">Erstellen einer Anzeigenkonfiguration</a></li>
-	<li>Optional: <a href="https://live.support.brightcove.com/live-api/ssai/live-api-server-side-ad-insertion-ssai.html#Managing_slates">Erstellen Sie Slate-Assets, um ungenutzte Werbezeit zu füllen</a></li>
+	<li>Bitten Sie Ihren Account Manager, Ihr Konto für Live-Streams, die serverseitige Anzeigeneinfügung (SSAI) und die Player-Verbesserungen für Live-SSAI zu aktivieren.</li>
+	<li><a href="#Create_an_ad_configuration">Erstellen Sie eine Anzeigenkonfiguration</a></li>
+	<li>Optional: <a href="https://live.support.brightcove.com/live-api/ssai/live-api-server-side-ad-insertion-ssai.html#Managing_slates">Erstellen Sie Slate-Assets, um nicht genutzte Anzeigenzeit zu füllen</a></li>
 	<li><a href="#Create_a_live_job">Erstellen Sie einen Live-Job</a></li>
-	<li><a href="#Create_a_remote_video">Erstellen Sie ein Remote-Video</a></li>
-	<li><a href="#Configure_the_player">Konfigurieren Sie den Player</a></li>
-	<li><a href="#Begin_streaming">Beginne zu streamen</a></li>
-	<li><a href="https://live.support.brightcove.com/live-api/ssai/live-api-cue-points-and-ad-beacons-ssai.html">Lösen Sie Anzeigen mit Cue-Points</a> aus (dies kann vor oder während des Live-Events erfolgen)</li>
+	<!-- <li><a href="#Create_a_remote_video">Create a remote video</a></li> -->
+	<li><a href="#Create_the_playback_token">Erstellen Sie das Wiedergabetoken</a></li>
+  <li><a href="#Configure_the_player">Konfigurieren Sie den Player</a></li>
+	<li><a href="#Begin_streaming">Starten Sie das Streaming</a></li>
+	<li><a href="https://live.support.brightcove.com/live-api/ssai/live-api-cue-points-and-ad-beacons-ssai.html">Lösen Sie Anzeigen mithilfe von Cue-Points aus</a> (Dies kann vor oder während des Live-Events erfolgen)</li>
 	<li><a href="#Cleanup">Aufräumen</a></li>
 </ol>
 </section>
 
 <section class="bcls-section">
-<h2 id="Create_an_ad_configuration">Erstellen einer Anzeigenkonfiguration</h2>
+<h2 id="Create_an_ad_configuration">Erstellen Sie eine Anzeigenkonfiguration</h2>
 
-<p>Eine Anzeigenkonfiguration definiert die Informationen, die erforderlich sind, um serverseitige Anzeigen in einen Live-Stream einzubeziehen. Dies umfasst die URL des Anzeigenanbieters, die erwartete Antwortart der Anzeige und ob Beacons gesendet werden sollen.</p>
+<p>Eine Anzeigenkonfiguration definiert die Informationen, die erforderlich sind, um serverseitige Anzeigen in einen Live-Stream aufzunehmen. Dies umfasst die URL des Anzeigenanbieters, den erwarteten Antworttyp der Anzeige und die Frage, ob Beacons gesendet werden sollen.</p>
 
-<aside class="bcls-aside bcls-aside--information">Für SLS MÜSSEN Anzeigenkonfigurationen einen <code translate="No">ad_configuration_expected_response_type</code> Wert von haben <code translate="No">Vast</code>.</aside>
+<aside class="bcls-aside bcls-aside--information"> Anmerkungen:
+  <ul>
+    <li>Anzeigenkonfigurations-IDs aus Video Cloud können nicht direkt für Live SSAI verwendet werden</li>
+    <li>Alle Änderungen, die Sie mit Video Cloud Studio an der Anzeigenkonfiguration vornehmen, löschen das <code translate="No">client_options</code> Flaggen; Dies ist ein bekanntes Problem</li>
+  </ul>
+</aside>
 
-<p>Um eine neue Anzeigenkonfiguration zu erstellen, senden Sie eine <code translate="No">POST</code> Anfrage wie folgt:</p>
+<p>Senden Sie a, um eine neue Anzeigenkonfiguration zu erstellen <code translate="No">POST</code> Anfrage wie folgt:</p>
 
 <table class="bcls-table">
 	<tbody class="bcls-table__body">
 		<tr>
-			<th>-Methode</th>
+			<th>Methode</th>
 			<td style="width:80em;"><code class="language-http" translate="No">POST</code></td>
 		</tr>
 		<tr>
@@ -346,28 +68,30 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
 			<td><code class="language-http" translate="No">https://api.bcovlive.io/v1/ssai/applications</code></td>
 		</tr>
 		<tr>
-			<th rowspan="2">Überschrift</th>
+			<th rowspan="2">Header</th>
 			<td><code class="language-http" translate="No">X-API-KEY: <span class="bcls-input">your API KEY</span></code></td>
 		</tr>
     <tr>
-				<td>Content-Type: Anwendung/JSON</td>
+				<td>Inhaltstyp: application / json</td>
 			</tr>
 	</tbody>
 </table>
+<br>
 
-<p>Alle Anfragen werden mit einem API-Schlüssel authentifiziert, der Ihnen bei der Einrichtung Ihres Kontos zur Verfügung gestellt wird. Der Schlüssel wird in der <code translate="No">X-API-KEY</code> Kopfzeile übergeben.</p>
+<p>Alle Anforderungen werden mithilfe eines API-Schlüssels authentifiziert, der Ihnen bei der Einrichtung Ihres Kontos zur Verfügung gestellt wird. Der Schlüssel wird in der übergeben <code translate="No">X-API-KEY</code> Header.</p>
 
-<p>Einzelheiten zu den Feldern des Anforderungskörpers finden Sie im <a href="https://live.support.brightcove.com/live-api/references/reference.html#operation/CreateAdConfiguration">Live API-Referenzdokument</a> .</p>
+<h3>Text anfordern</h3>
+<p>Einzelheiten zu den Feldern des Anforderungshauptteils finden Sie in der <a href="https://live.support.brightcove.com/live-api/references/reference.html#operation/CreateAdConfiguration">Live API-Referenz</a> Dokument.</p>
 
-<p>Mit Player Enhancements for Live SSAI können die hervorgehobenen Felder innerhalb des <code translate="No">application_ad_configuration</code> Objekts festgelegt werden.</p>
+<p>Mit Player Enhancements für Live SSAI können die hervorgehobenen Felder innerhalb von festgelegt werden <code translate="No">application_ad_configuration</code> Objekt.</p>
 
-<p>Muster-Anfrage Body:</p>
+<p>Beispielanforderungshauptteil:</p>
 
 <pre class="line-numbers">
 <code class="language-json" translate="No">{
   "application_ad_configuration": {
 	"ad_configuration_description": "<span class="bcls-input">your ad config description</span>",
-	"ad_configuration_expected_response_type": "Vast",
+<span class="bcls-highlight">    "ad_configuration_expected_response_type": "Vast",</span>
 	"ad_configuration_headers_for_impressions": false,
 	"ad_configuration_strategy": "SingleAdResponse",
 	"ad_configuration_transforms": [],
@@ -380,19 +104,91 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
       "client_only_tracking": <span class="bcls-input">true / false</span>
     }</span>
   },
-  "application_description": "<span class="bcls-input">your aaplication description</span>"
+  "application_description": "<span class="bcls-input">your application description</span>"
 }</code></pre>
 
-<p>Alle <code translate="No">client_options</code> sind optional.  <code translate="No">client_only_tracking</code> Hat nur den Standardwert von <code translate="No">false</code>.</p>
+<p>Hier sind die Anzeigenkonfigurationsfelder im Zusammenhang mit Player-Verbesserungen mit Live SSAI:</p>
+<table class="bcls-table">
+  <thead class="bcls-table__head">
+    <tr>
+      <th>Feld</th>
+      <th>Typ</th>
+      <th>Benötigt</th>
+      <th>Beschreibung</th>
+    </tr>
+  </thead>
+  <tbody class="bcls-table__body">
+    <tr>
+      <td><code translate="No">ad_configuration_expected_response_type</code></td>
+      <td>String</td>
+      <td>Ja</td>
+      <td>Für diese Funktion MÜSSEN Anzeigenkonfigurationen einen Wert von haben <code translate="No">Vast</code></td>
+    </tr>
+    <tr>
+      <td><code translate="No">ad_configuration_client_sdk_enabled</code></td>
+      <td>Boolescher Wert</td>
+      <td>Ja</td>
+      <td>Um diese Funktion zu aktivieren, muss dieses Feld den Wert von haben <code translate="No">true</code></td>
+    </tr>
+    <tr>
+      <td><code translate="No">client_options</code></td>
+      <td>Objekt</td>
+      <td></td>
+      <td>Ein Objekt von Feldern, die sich auf Player-Verbesserungen beziehen</td>
+    </tr>
+    <tr>
+      <td><code translate="No">client_options.<br> show_ad_break_remaining_time</code></td>
+      <td>Boolescher Wert</td>
+      <td></td>
+      <td>Verbleibende Anzeigezeit für eine Werbepause
+        <br>
+        Werte: <code translate="No">true</code>/<code translate="No">false</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code translate="No">client_options.<br> show_ad_remaining_time</code></td>
+      <td>Boolescher Wert</td>
+      <td></td>
+      <td>Verbleibende Anzeigezeit für eine Anzeige
+        <br>
+        Werte: <code translate="No">true</code>/<code translate="No">false</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code translate="No">client_options.<br> show_number_of_remaining_ads</code></td>
+      <td>Boolescher Wert</td>
+      <td></td>
+      <td>Zeigen Sie die Anzahl der verbleibenden Anzeigen in der Werbeunterbrechung an
+        <br>
+        Werte: <code translate="No">true</code>/<code translate="No">false</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code translate="No">client_options.<br> client_only_tracking</code></td>
+      <td>Boolescher Wert</td>
+      <td></td>
+      <td>Serverseitige Tracking-Ereignisse deaktivieren (Impressionen/Quartile)
+        <br>
+        Werte: <code translate="No">true</code>/<code translate="No">false</code> 
+        <br>Standard: <code translate="No">false</code>
+        <br><br>
+        <aside class="bcls-aside bcls-aside--information">Wann <code translate="No">true</code> wird unsere normale Verarbeitung von Anzeigenimpressionen umgangen und stattdessen vom Kunden ausgelöst. Dies macht die Impressionen genauer / zeitnaher, aber wir haben keinen Einblick mehr in die Tracking-Ereignisse. Clientseitige Anzeigen können auch von bestimmten Werbeblockern blockiert werden.</aside>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<aside class="bcls-aside bcls-aside--tip">Alle der <code translate="No">client_options</code> Felder sind optional.  <code translate="No">client_only_tracking</code> Hat nur einen Standardwert von <code translate="No">false</code>.</aside>
 
-<p>Beispiel Antwort:</p>
+<h3>Antwort</h3>
+<p>Beispielantwort:</p>
 
 <pre class="line-numbers">
 <code class="language-json" translate="No">{
   "application": {
-    "application_description": "Test ad configuration for SLS",
+    "application_description": "Test ad configuration",
     "application_ad_configuration": {
-    "ad_configuration_description": "SLS Ad Config : BC Learning PAS/SLS",
+    "ad_configuration_description": "Ad config description",
     "ad_configuration_expected_response_type": "Vast",
     "ad_configuration_strategy": "SingleAdResponse",
     "ad_configuration_transforms": [],
@@ -413,20 +209,20 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
   "action": "inserted"
 }</code></pre>
 
-<p>Nachdem Sie erfolgreich eine Anzeigenkonfiguration erstellt haben, kopieren Sie die <code translate="No">application_id</code> (Anzeigenkonfigurations-ID), die generiert wurde. Sie benötigen dies später, um die SSAI-Wiedergabe-URL zu finden.</p>
+<p>Nachdem Sie eine Anzeigenkonfiguration erfolgreich erstellt haben, kopieren Sie die <code translate="No">application_id</code> (Anzeigenkonfigurations-ID), die generiert wurde. Sie benötigen dies später, um die SSAI-Wiedergabe-URL zu finden.</p>
 
-<p>Informationen zum Auflisten, Aktualisieren und Löschen von Anzeigenkonfigurationen finden Sie im Dokument <a href="https://live.support.brightcove.com/live-api/ssai/live-api-server-side-ad-insertion-ssai.html#Create_an_ad_configuration">Verwalten von Anzeigenkonfigurationen</a> </p>
+<p>Informationen zum Auflisten, Aktualisieren und Löschen von Anzeigenkonfigurationen finden Sie unter <a href="https://live.support.brightcove.com/live-api/ssai/live-api-server-side-ad-insertion-ssai.html#Create_an_ad_configuration">Anzeigenkonfigurationen verwalten</a> Dokument</p>
 </section>
 
 <section class="bcls-section">
 <h2 id="Create_a_live_job">Erstellen Sie einen Live-Job</h2>
 
-<p>Um einen Live-Job zu erstellen, senden Sie eine <code translate="No">POST</code> Anfrage wie folgt:</p>
+<p>Senden Sie a, um einen Live-Job zu erstellen <code translate="No">POST</code> Anfrage wie folgt:</p>
 
 <table class="bcls-table">
 	<tbody class="bcls-table__body">
 		<tr>
-			<th>-Methode</th>
+			<th>Methode</th>
 			<td style="width:80em;"><code class="language-http" translate="No">POST</code></td>
 		</tr>
 		<tr>
@@ -434,26 +230,27 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
 			<td><code class="language-http" translate="No">https://api.bcovlive.io/v1/jobs</code></td>
 		</tr>
 		<tr>
-			<th rowspan="2">Header</th>
+			<th rowspan="2">Überschriften</th>
 			<td><code class="language-http" translate="No">X-API-KEY: <span class="bcls-input">your API KEY</span></code></td>
 		</tr>
     <tr>
-				<td>Content-Type: Anwendung/JSON</td>
+				<td>Inhaltstyp: application / json</td>
 			</tr>
 	</tbody>
 </table>
 
-<p>Einzelheiten zu den Feldern des Anforderungskörpers finden Sie im <a href="https://live.support.brightcove.com/live-api/references/reference.html#operation/CreateALiveJob">Live API-Referenzdokument</a> .</p>
+<h3>Text anfordern</h3>
 
-<p>Für einen Live-Job mit aktivierter SSAI, legen Sie <code translate="No">ad_insertion: true</code> in Ihrem HTTP-Anfragetext fest.</p>
+<p>Einzelheiten zu den Feldern des Anforderungshauptteils finden Sie in der <a href="https://live.support.brightcove.com/live-api/references/reference.html#operation/CreateALiveJob">Live API-Referenz</a> Dokument.</p>
 
-<p>Wenn Sie einen VOD-Clip aus dem Live-Stream erstellen möchten, schließen Sie den <code translate="No">videocloud</code> Parameter in den Anfragetext ein. Einzelheiten finden Sie in der <a href="https://live.support.brightcove.com/live-api/guides/live-api-creating-vod-clips.html">Live-API: Erstellen eines VOD-Clips-Dokuments</a> .</p>
+<p>Legen Sie für einen Live-Job mit aktivierter SSAI fest <code translate="No">ad_insertion: true</code> in Ihrem HTTP-Anforderungshauptteil.</p>
 
-<p>Das hervorgehobene Feld in den unten aufgeführten Anfragetexten (für Jobs, die ein Video Cloud-Video verwenden und ein Remote-Video verwenden) wird für die serverseitige Anzeigeneinfügung (SSAI) benötigt.</p>
+<details>
+  <summary>Beispielanfrage (Video Cloud Video)</summary>
+  <p>Um ein Video Cloud-Video zu erstellen, das für Ihren Live-Stream verwendet werden soll, und um VoD-Clips aus dem Live-Stream zu erstellen, schließen Sie Folgendes ein: <code translate="No">videocloud</code> Objekt im Anforderungshauptteil. Einzelheiten finden Sie in der <a href="https://live.support.brightcove.com/live-api/guides/live-api-creating-vod-clips.html">Live-API: VOD-Clips erstellen</a> Dokument.</p>
+  <p>Das hervorgehobene Feld unten wird für die serverseitige Anzeigeneinfügung (SSAI) benötigt.</p>
 
-<h3>Beispiel für den Anfragetext (unter Verwendung eines Video Cloud-Videos):</h3>
-
-<pre class="line-numbers">
+    <pre class="line-numbers">
 <code class="language-json" translate="No">{
   "live_stream": true,
   <span class="bcls-highlight">"ad_insertion": true,</span>
@@ -512,9 +309,15 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
     }
   }
 }</code></pre>
-<h3>Beispiel für den Anfragetext (mit Remote-Video):</h3>
+</details>
+<br>
 
-<pre class="line-numbers">
+<details>
+  <summary>Beispielanforderung (Remote-Video)</summary>
+  <p>Um ein Remote-Video für Ihren Live-Stream zu verwenden, sollte Ihr Anfragetext ähnlich aussehen.</p>
+  <p>Das hervorgehobene Feld unten wird für die serverseitige Anzeigeneinfügung (SSAI) benötigt.</p>
+
+  <pre class="line-numbers">
 <code class="language-json" translate="No">{
   "live_stream":true,
   <span class="bcls-highlight">"ad_insertion":true,</span>
@@ -556,17 +359,107 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
     }
   ]
 }</code></pre>
+</details>
+<br>
+
 
 <p>Weitere hilfreiche Ressourcen:</p>
 
 <ul>
-	<li><a href="https://live.support.brightcove.com/live-api/getting-started/overview-brightcove-live-api.html">Übersicht: Brightcove Live API</a></li>
-	<li><a href="https://live.support.brightcove.com/live-api/getting-started/quick-start-create-live-stream-using-brightcove-live-api.html">Kurzanleitung: Erstellen Sie einen Livestream mit der Brightcove Live API</a></li>
+	<li><a href="https://live.support.brightcove.com/live-api/getting-started/overview-brightcove-live-api.html">Überblick: Brightcove Live-API</a></li>
+	<li><a href="https://live.support.brightcove.com/live-api/getting-started/quick-start-create-live-stream-using-brightcove-live-api.html">Schnellstart: Erstellen Sie einen Live-Stream mit der Brightcove Live-API</a></li>
 </ul>
 
-<p>Beispiel Antwort:</p>
+<h3>Antwort</h3>
 
-<pre class="line-numbers">
+<details>
+  <summary>Beispielantwort (Video Cloud Video)</summary>
+  <pre class="line-numbers">
+<code class="language-json" translate="No">{
+ <span class="bcls-highlight">&quot;id&quot;: &quot;227356abcdefghijklmno12345&quot;,</span>
+ &quot;outputs&quot;: [
+  {
+   &quot;id&quot;: &quot;0-2273561a201ec18&quot;,
+   &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_0/chunklist.m3u8&quot;,
+   &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_0/chunklist_dvr.m3u8&quot;,
+   &quot;playback_url_vod&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_0/chunklist_vod.m3u8&quot;,
+   &quot;playback_added_cdns&quot;: [],
+   &quot;label&quot;: &quot;hls720p&quot;
+  },
+  {
+   &quot;id&quot;: &quot;1-2273561a201e8c18&quot;,
+   &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_1/chunklist.m3u8&quot;,
+   &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_1/chunklist_dvr.m3u8&quot;,
+   &quot;playback_url_vod&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_1/chunklist_vod.m3u8&quot;,
+   &quot;playback_added_cdns&quot;: [],
+   &quot;label&quot;: &quot;hls540p&quot;
+  },
+  {
+   &quot;id&quot;: &quot;2-2273561a201ec18&quot;,
+   &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_2/chunklist.m3u8&quot;,
+   &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_2/chunklist_dvr.m3u8&quot;,
+   &quot;playback_url_vod&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/profile_2/chunklist_vod.m3u8&quot;,
+   &quot;playback_added_cdns&quot;: [],
+   &quot;label&quot;: &quot;hls360p&quot;
+  },
+  {
+   &quot;id&quot;: &quot;3-2273561a201ec18&quot;,
+   &quot;playlist_type&quot;: &quot;defaultS3&quot;,
+   &quot;type&quot;: &quot;playlist&quot;,
+   &quot;filename&quot;: &quot;playlist.m3u8&quot;,
+   &quot;dvr_filename&quot;: &quot;playlist_dvr.m3u8&quot;,
+   &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/playlist.m3u8&quot;,
+   &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/playlist_dvr.m3u8&quot;,
+   &quot;ssai_playback_urls&quot;: {
+    &quot;b907ac7935e2&quot;: {
+     &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/b907ac7935e2/playlist_ssaiM.m3u8&quot;,
+     &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/b907ac7935e2/playlist_dvr_ssaiM.m3u8&quot;,
+     &quot;playback_added_cdns&quot;: [],
+     &quot;description&quot;: &quot;Test ad configuration for SLS&quot;,
+     &quot;type&quot;: &quot;ads&quot;
+    },
+    &quot;dc9aa8ee3520f2&quot;: {
+     &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/dc9aa8ee3520f2/playlist_ssaiM.m3u8&quot;,
+     &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/dc9aa8ee3520f2/playlist_dvr_ssaiM.m3u8&quot;,
+     &quot;playback_added_cdns&quot;: [],
+     &quot;description&quot;: &quot;Test live ad config for SLS&quot;,
+     &quot;type&quot;: &quot;ads&quot;
+    }
+   },
+   &quot;playback_added_cdns&quot;: []
+  }
+ ],
+ <span class="bcls-highlight">&quot;stream_url&quot;: &quot;rtmp://ec2-54-184-149-60.us-west-2.compute.amazonaws.com:1935/2273561a201ec18&quot;,
+ &quot;stream_name&quot;: &quot;alive&quot;,</span>
+ &quot;static&quot;: false,
+ <span class="bcls-highlight">&quot;job_videocloud_asset_id&quot;: &quot;6227380655001&quot;,</span>
+ &quot;encryption&quot;: {},
+ &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/playlist.m3u8&quot;,
+ &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/playlist_dvr.m3u8&quot;,
+ &quot;ssai_playback_urls&quot;: {
+  &quot;b907ac7935e2&quot;: {
+   &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/b907ac7935e2/playlist_ssaiM.m3u8&quot;,
+   &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/b907ac7935e2/playlist_dvr_ssaiM.m3u8&quot;,
+   &quot;playback_added_cdns&quot;: [],
+   &quot;description&quot;: &quot;Test ad configuration for SLS&quot;,
+   &quot;type&quot;: &quot;ads&quot;
+  },
+  &quot;dc9aa8ee3520f2&quot;: {
+   &quot;playback_url&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/dc9aa8ee3520f2/playlist_ssaiM.m3u8&quot;,
+   &quot;playback_url_dvr&quot;: &quot;https://bcovlive-a.akamaihd.net/2273561a201ec18/us-west-2/NA/dc9aa8ee3520f2/playlist_dvr_ssaiM.m3u8&quot;,
+   &quot;playback_added_cdns&quot;: [],
+   &quot;description&quot;: &quot;Test live ad config for SLS&quot;,
+   &quot;type&quot;: &quot;ads&quot;
+  }
+ },
+ &quot;playback_added_cdns&quot;: []
+}</code></pre>
+</details>
+<br>
+
+<details>
+  <summary>Beispielantwort (Remote-Video)</summary>
+  <pre class="line-numbers">
 <code class="language-json" translate="No">{
  <span class="bcls-highlight">"id": "bbccddeeffgghhiijjkk0011223344",</span>
  "outputs": [
@@ -607,7 +500,7 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
      "playback_url": "https://bcovlive-a.akamaihd.net/bbccddeeffgghhiijjkk0011223344/us-west-2/NA/91bc2d5ff4a4441db34c2457c751c3ca/playlist_ssaiM.m3u8",
      "playback_url_dvr": "https://bcovlive-a.akamaihd.net/bbccddeeffgghhiijjkk0011223344/us-west-2/NA/91bc2d5ff4a4441db34c2457c751c3ca/playlist_dvr_ssaiM.m3u8",
      "playback_added_cdns": [],
-     "description": "Test ad configuration for SLS",
+     "description": "Test ad configuration",
      "type": "ads"
     },
     "e7f6e9a3022a45e1b0b322ba57399150": {
@@ -620,56 +513,66 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
    }
   }
  ],
- <span class="bcls-highlight">"stream_url": "rtmp://ep4-usw2.bcovlive.io:1935/bbccddeeffgghhiijjkk0011223344",</span>
- "stream_name": "alive",
+ <span class="bcls-highlight">"stream_url": "rtmp://ep4-usw2.bcovlive.io:1935/bbccddeeffgghhiijjkk0011223344",
+ "stream_name": "alive",</span>
  "static": false,
  "encryption": {},
  "playback_url": "https://bcovlive-a.akamaihd.net/bbccddeeffgghhiijjkk0011223344/us-west-2/NA/playlist.m3u8",
  "playback_url_dvr": "https://bcovlive-a.akamaihd.net/bbccddeeffgghhiijjkk0011223344/us-west-2/NA/playlist_dvr.m3u8",
  "ssai_playback_urls": {
   "91bc2d5ff4a4441db34c2457c751c3ca": {
-   <span class="bcls-highlight">"playback_url": "https://bcovlive-a.akamaihd.net/bbccddeeffgghhiijjkk0011223344/us-west-2/NA/91bc2d5ff4a4441db34c2457c751c3ca/playlist_ssaiM.m3u8",</span>
-   <span class="bcls-highlight">"playback_url_dvr": "https://bcovlive-a.akamaihd.net/bbccddeeffgghhiijjkk0011223344/us-west-2/NA/91bc2d5ff4a4441db34c2457c751c3ca/playlist_dvr_ssaiM.m3u8",</span>
+   "playback_url": "https://bcovlive-a.akamaihd.net/bbccddeeffgghhiijjkk0011223344/us-west-2/NA/91bc2d5ff4a4441db34c2457c751c3ca/playlist_ssaiM.m3u8",
+   "playback_url_dvr": "https://bcovlive-a.akamaihd.net/bbccddeeffgghhiijjkk0011223344/us-west-2/NA/91bc2d5ff4a4441db34c2457c751c3ca/playlist_dvr_ssaiM.m3u8",
    "playback_added_cdns": [],
-   "description": "Test ad configuration for SLS",
+   "description": "Test ad configuration",
    "type": "ads"
   }
  }
 }</code></pre>
+</details>
+<br>
 
-<p>Notieren Sie sich anhand der API-Antwort den Auftrag <code translate="No">id</code> und die <code translate="No">stream_url</code> Eigenschaften. Die wirst du später brauchen.</p>
+<p>Notieren Sie sich in der API-Antwort die folgenden Feldwerte für den nächsten Schritt:</p>
+<ul>
+  <li><code translate="No">id</code>- Ihre Live-Job-ID</li>
+  <li><code translate="No">stream_url</code>, <code translate="No">stream_name</code> - Eingänge für Ihren Live-Stream-Encoder</li>
+  <li><code translate="No">job_videocloud_asset_id</code>- Video Cloud-Video-ID</li>
+</ul>
 
-<p>Im Antworttext gibt es ein Objekt mit SSAI-Informationen für jede Anzeigenkonfiguration in Ihrem Konto. Das obige Beispiel zeigt das Objekt für eine Anzeigenkonfiguration. Dies sollte die ID der Anzeigenkonfiguration sein, die Sie im vorherigen Schritt erstellt haben.</p>
+<!-- <p>From the API response, make note of the job <code translate="No">id</code> and the <code translate="No">stream_url</code> properties. You will need these later.</p>
 
-<p>Das <code translate="No">playback_url</code> oder <code translate="No">playback_url_dvr</code> Das Ihrer Anzeigenkonfigurations-ID zugeordnete Feld wird im nächsten Schritt zum Erstellen eines Remote-Video-Assets verwendet.</p>
+<p>In the response body, there will be an object containing SSAI information for each ad configuration in your account. The sample above shows the object for one ad configuration. This should be the ad configuration id you created in the previous step.</p>
+
+<p>The <code translate="No">playback_url</code> or <code translate="No">playback_url_dvr</code> field associated with your ad configuration id is used in the next step to create a remote video asset.</p>
+<p>Playback URLs:</p>
+<ul>
+  <li>URLs with either <code translate="No">playlist.m3u8</code> or <code translate="No">playlist_dvr.m3u8</code> provide non-SSAI playback</li>
+  <li>URLs with either <code translate="No">playlist_ssaiM.m3u8</code> or <code translate="No">playlist_dvr_ssaiM.m3u8</code> provide SSAI playback</li>
+</ul> -->
 </section>
 
-<section class="bcls-section">
-<h2 id="Create_a_remote_video">Erstellen Sie ein Remote-Video</h2>
+<!-- <section class="bcls-section">
+<h2 id="Create_a_remote_video">Create a remote video</h2>
 
-<p>In Video Cloud erstellen Sie ein Remote-Video, das auf Ihren Live-Stream verweist. Für diesen Schritt benötigen Sie das <code translate="No">playback_url</code> oder <code translate="No">playback_url_dvr</code> aus dem vorherigen Schritt.</p>
+<p>In Video Cloud, you will create a remote video which points to your live stream. For this step, you will need the <code translate="No">playback_url</code> or <code translate="No">playback_url_dvr</code> from the previous step.</p>
 
-<p>Es gibt zwei Möglichkeiten, ein Remote-Video zu erstellen:</p>
+<p>There are two ways to create a remote video:</p>
 
 <ul>
-	<li><a href="https://support.brightcove.com/quick-start-create-live-stream-using-brightcove-live-api#useStudio">Verwenden von Video Cloud Studio</a></li>
-	<li><a href="https://support.brightcove.com/quick-start-create-live-stream-using-brightcove-live-api#Set_up_Video_Cloud_video">Verwenden Sie die CMS-API</a></li>
+	<li><a href="https://studio.support.brightcove.com/media/working-remote-asset-videos.html">Working with Remote Asset Videos</a></li>
+	<li><a href="https://apis.support.brightcove.com/cms/managing-videos/using-cms-api-remote-assets.html">Remote Assets using the CMS API</a></li>
 </ul>
-</section>
+</section> -->
 
 <section class="bcls-section">
-<h2 id="Configure_the_player">Konfigurieren Sie den Player</h2>
-
-<p>Das Abspielen Ihres Live-Streams über die Playback-API unterscheidet sich geringfügig von der Art und Weise, wie Sie ein normales Video Cloud-Video abspielen. Zusätzlich zur Angabe der Video-ID (Referenz-ID) müssen Sie ein Wiedergabe-Token angeben, das die Anzeigenkonfiguration angibt, die Sie verwenden möchten. Sie müssen auch angeben, ob Sie eine DVR-Wiedergabe wünschen.</p>
-
-<h3>Erstellen Sie das Wiedergabe-Token</h3>
-
-<p>Um das Wiedergabe-Token zu erstellen, senden Sie eine <code translate="No">POST</code> Anfrage wie folgt:</p>
+<h2 id="Create_the_playback_token">Erstellen Sie das Wiedergabetoken</h2>
+<p>Sie benötigen den Wiedergabetoken mit Ihrem Player.</p>
+<p>Senden Sie a, um das Wiedergabetoken zu erstellen <code translate="No">POST</code> Anfrage wie folgt:</p>
 
 <table class="bcls-table">
 	<tbody class="bcls-table__body">
 		<tr>
-			<th>-Methode</th>
+			<th>Methode</th>
 			<td style="width:80em;"><code class="language-http" translate="No">POST</code></td>
 		</tr>
 		<tr>
@@ -677,16 +580,17 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
 			<td><code class="language-http" translate="No">https://api.bcovlive.io/v1/jobs/<span class="bcls-input">your live job id</span>/playback-token</code></td>
 		</tr>
 		<tr>
-			<th rowspan="2">Header</th>
+			<th rowspan="2">Überschriften</th>
 			<td><code class="language-http" translate="No">X-API-KEY: <span class="bcls-input">your API KEY</span></code></td>
 		</tr>
     <tr>
-				<td>Content-Type: Anwendung/JSON</td>
+				<td>Inhaltstyp: application / json</td>
 			</tr>
 	</tbody>
 </table>
 
-<p>Muster-Anfrage Body:</p>
+<h4>Text anfordern</h4>
+<p>Beispielanforderungshauptteil:</p>
 
 <pre class="line-numbers">
 <code class="language-json" translate="No">{
@@ -694,59 +598,64 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
    "application_id":"<span class="bcls-input">your ad config id</span>"
 }</code></pre>
 
-<p>Beispiel Antwort:</p>
+<h4>Antwort</h4>
+<p>Beispielantwort:</p>
 
 <pre class="line-numbers">
 <code class="language-json" translate="No">{
  "playback_token": "live.JhQabcdefghijkl000000000abcdefghi"
 }</code></pre>
 
-<p>Der Antworttext enthält ein generiertes Wiedergabe-Token. Verwenden Sie dies bei einem Playback-API-Aufruf mit den folgenden Playern:</p>
-
-<h3>Web-Spieler</h3>
-
-<p>Einzelheiten zur Konfiguration des Brightcove Players finden Sie im Dokument <a href="https://player.support.brightcove.com/advertising/using-player-enhancements-live-ssai-brightcove-player.html">Using Player Enhancements for Live SSAI with Brightcove Player</a> .</p>
-
-<h3>Native Android-Spieler</h3>
-
-<p>Einzelheiten zur Konfiguration des Native Player für Android finden Sie im Dokument <a href="https://sdks.support.brightcove.com/features/using-player-enhancements-live-ssai-native-sdks.html">Using Player Enhancements for Live SSAI with the Native SDKs</a> .</p>
-
-<h3>Native iOS Spieler</h3>
-
-<p>Einzelheiten zur Konfiguration des Native Player für iOS finden Sie im Dokument <a href="https://sdks.support.brightcove.com/features/using-player-enhancements-live-ssai-native-sdks.html">Using Player Enhancements for Live SSAI with the Native SDKs</a> .</p>
+<p>Der Antworttext enthält ein generiertes Wiedergabetoken. Verwenden Sie diese Option, wenn Sie mit Ihrem Player einen Playback-API-Aufruf durchführen.</p>
 </section>
 
 <section class="bcls-section">
-<h2 id="Begin_streaming">Beginne zu streamen</h2>
+<h2 id="Configure_the_player">Konfigurieren Sie den Player</h2>
 
-<p>Es gibt viele Tools, um ein Live-Streaming-Event zu erstellen. Hier sind einige Encoder, mit denen Sie einen von einem CDN gelieferten Live-Stream erstellen können: (Verwenden Sie das <code translate="No">playback_url</code> aus einem vorherigen Schritt)</p>
+<p>Die Wiedergabe Ihres Live-Streams über die Wiedergabe-API unterscheidet sich geringfügig von der Wiedergabe eines normalen Video Cloud-Videos. Zusätzlich zur Angabe der Video-ID (Referenz-ID) müssen Sie ein Wiedergabe-Token einfügen, das die Anzeigenkonfiguration angibt, die Sie verwenden möchten. Sie müssen auch angeben, ob Sie eine DVR-Wiedergabe wünschen.</p>
+
+<h3>Internet Spieler</h3>
+
+<p>Ausführliche Informationen zum Konfigurieren des Brightcove-Players finden Sie in der <a href="https://player.support.brightcove.com/advertising/using-player-enhancements-live-ssai-brightcove-player.html">Verwenden von Player-Verbesserungen für Live-SSAI mit Brightcove Player</a> Dokument.</p>
+
+<h3>Native Android-Player</h3>
+
+<p>Weitere Informationen zum Konfigurieren des Native Player für Android finden Sie in der <a href="https://sdks.support.brightcove.com/features/using-player-enhancements-live-ssai-native-sdks.html">Verwenden von Player-Verbesserungen für Live-SSAI mit den nativen SDKs</a> Dokument.</p>
+
+<h3>Native iOS-Player</h3>
+
+<p>Weitere Informationen zum Konfigurieren des Native Player für iOS finden Sie in der <a href="https://sdks.support.brightcove.com/features/using-player-enhancements-live-ssai-native-sdks.html">Verwenden von Player-Verbesserungen für Live-SSAI mit den nativen SDKs</a> Dokument.</p>
+</section>
+
+<section class="bcls-section">
+<h2 id="Begin_streaming">Starten Sie das Streaming</h2>
+
+<p>Es gibt viele Tools zum Erstellen eines Live-Streaming-Ereignisses. Hier sind einige Encoder, mit denen Sie einen von einem CDN gelieferten Live-Stream erzeugen können:</p>
 
 <ul>
 	<li><a href="https://support.brightcove.com/quick-start-create-live-stream-using-brightcove-live-api#wirecast">Telestream Wirecast Encoder</a></li>
-	<li><a href="https://support.brightcove.com/step-step-using-live-module-open-broadcaster-software-obs#encoder">OBS Studio-Encoder</a></li>
+	<li><a href="https://support.brightcove.com/step-step-using-live-module-open-broadcaster-software-obs#encoder">OBS Studio Encoder</a></li>
 </ul>
 </section>
 
 <section class="bcls-section">
 <h2 id="Cleanup">Aufräumen</h2>
 
-<p>Wenn dein Livestream abgeschlossen ist, kannst du die Artefakte für deinen Stream wie folgt bereinigen:</p>
+<p>Wenn Ihr Live-Stream fertig ist, können Sie die Artefakte für Ihren Stream wie folgt bereinigen:</p>
 
 <ol class="bcls-tasklist-restart">
 	<li>Stoppen Sie Ihren Streaming-Encoder</li>
 	<li>
-	<p>Bricht den Livejob ab.</p>
+	<p>Kündigen Sie den Live-Job.</p>
 
-	<aside class="bcls-aside bcls-aside--information">Der Live-Job ist nur für die Wiederverbindungszeit verfügbar, die bei der Erstellung des Auftrags angegeben wurde.</aside>
+	<aside class="bcls-aside bcls-aside--information">Der Live-Job ist nur für die beim Erstellen des Jobs angegebene Wiederverbindungszeit verfügbar.</aside>
 
-	<p>&nbsp;</p>
-
-	<p>Um einen Live-Job abzubrechen, senden Sie eine <code translate="No">PUT</code> Anfrage wie folgt:</p>
+	<p>Um einen Live-Job abzubrechen, senden Sie a <code translate="No">PUT</code> Anfrage wie folgt:</p>
 
 	<table class="bcls-table">
 		<tbody class="bcls-table__body">
 			<tr>
-				<th>-Methode</th>
+				<th>Methode</th>
 				<td style="width:80em;"><code class="language-http" translate="No">PUT</code></td>
 			</tr>
 			<tr>
@@ -754,26 +663,27 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
 				<td><code class="language-http" translate="No">https://api.bcovlive.io/v1/jobs/<span class="bcls-input">your live job id</span>/cancel</code></td>
 			</tr>
 			<tr>
-				<th rowspan="2">Header</th>
+				<th rowspan="2">Überschriften</th>
 				<td><code class="language-http" translate="No">X-API-KEY: <span class="bcls-input">your API KEY</span></code></td>
 			</tr>
       <tr>
-				<td>Content-Type: Anwendung/JSON</td>
+				<td>Inhaltstyp: application / json</td>
 			</tr>
 		</tbody>
 	</table>
+  <br>
 
-	<p>Einzelheiten finden Sie im <a href="https://live.support.brightcove.com/live-api/references/reference.html#operation/CancelLiveJob">Live API-Referenzdokument</a> .</p>
+	<p>Einzelheiten finden Sie in der <a href="https://live.support.brightcove.com/live-api/references/reference.html#operation/CancelLiveJob">Live API-Referenz</a> Dokument.</p>
 	</li>
 	<li>
 	<p>Löschen Sie Ihre Anzeigenkonfiguration</p>
 
-	<p>Um eine Anzeigenkonfiguration zu löschen, senden Sie eine <code translate="No">DELETE</code> Anfrage wie folgt:</p>
+	<p>Senden Sie eine, um eine Anzeigenkonfiguration zu löschen <code translate="No">DELETE</code> Anfrage wie folgt:</p>
 
 	<table class="bcls-table">
 		<tbody class="bcls-table__body">
 			<tr>
-				<th>-Methode</th>
+				<th>Methode</th>
 				<td style="width:80em;"><code class="language-http" translate="No">PUT</code></td>
 			</tr>
 			<tr>
@@ -781,172 +691,18 @@ function doGTranslate(lang_pair) {if(lang_pair.value)lang_pair=lang_pair.value;i
 				<td><code class="language-http" translate="No">https://api.bcovlive.io/v1/ssai/applications/application/<span class="bcls-input">your ad config id</span></code></td>
 			</tr>
 			<tr>
-				<th rowspan="2">Header</th>
+				<th rowspan="2">Überschriften</th>
 				<td><code class="language-http" translate="No">X-API-KEY: <span class="bcls-input">your API KEY</span></code></td>
 			</tr>
       <tr>
-				<td>Content-Type: Anwendung/JSON</td>
+				<td>Inhaltstyp: application / json</td>
 			</tr>
 		</tbody>
 	</table>
+  <br>
 
-	<p>Einzelheiten finden Sie im <a href="https://live.support.brightcove.com/live-api/references/reference.html#operation/DeleteAdConfiguration">Live API-Referenzdokument</a> .</p>
+	<p>Einzelheiten finden Sie in der <a href="https://live.support.brightcove.com/live-api/references/reference.html#operation/DeleteAdConfiguration">Live API-Referenz</a> Dokument.</p>
 	</li>
 </ol>
 </section>
 </article>
-
-<!-- complete bootstrap layout -->
-    </div>
-    <div class="col-sm-2 right-side-bar">
-      
-      <nav class="right-side-nav" id="right_side_nav">
-        <h6 class="toc">Inhalt der Seite</h6>
-        <ul id="in_page_nav" class="list-none"></ul>
-      </nav>
-      
-    </div>
-  </div>
-</div>
-
-<hr>
-<footer class="bcls-footer" role="contentinfo">  <div class="row">
-    <div class="region region-footer-top-center col-md-12">
-      <nav role="navigation" aria-labelledby="block-brightcovesupport-menu" id="block-brightcovesupport" class="footer-menu">
-
-        <h2>Brightcove Support-Service</h2>
-
-        <ul class="menu">
-          <li>
-            <a href="https://status.brightcove.com">Systemstatus</a>
-          </li>
-          <li>
-            <a href="https://supportportal.brightcove.com/s/login/?">Kontakt mit dem Support</a>
-          </li>
-          <li>
-            <a href="https://support.brightcove.com/">DOKUMENTATION</a>
-          </li>
-        </ul>
-
-      </nav>
-      <nav role="navigation" aria-labelledby="block-training-menu" id="block-training" class="footer-menu">
-
-        <h2>Schulungen</h2>
-
-        <ul class="menu">
-          <li>
-            <a href="https://studio.support.brightcove.com/training/online-training-courses.html">Online-Kurse</a>
-          </li>
-          <li>
-            <a href="https://studio.support.brightcove.com/training/register-training.html">Für einen Kurs anmelden</a>
-          </li>
-          <li>
-            <a href="https://university.brightcove.com/">Brightcove Universität</a>
-          </li>
-        </ul>
-
-      </nav>
-      <nav role="navigation" aria-labelledby="block-brightcove-menu" class="footer-menu">
-
-        <h2>Brightcove</h2>
-
-        <ul class="menu">
-          <li>
-            <a href="https://www.brightcove.com">brightcove.com</a>
-          </li>
-          <li>
-            <a href="https://supportportal.brightcove.com/s/login/?">Kontaktiere uns</a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-  <div class="row">
-    <div class="region region-footer-bottom-center col-md-12">
-      <div class="bcls-copyright footer-menu">
-        <table>
-          <tr>
-            <td>
-              <div id="bc_copyright" class="field field--name-field-copyright-year field--type-string field--label-hidden field--item" style="float: left;"> Brightcove Inc. Alle Rechte vorbehalten.</div>
-            </td>
-            <td><a href="https://www.brightcove.com/en/legal/privacy">Privacy</a> | <a href="https://www.brightcove.com/en/terms-and-conditions">Allgemeine Geschäftsbedingungen</a></td>
-            <td>
-              <div class="gf-links-cols footer-menu">
-                <div class="gf-social"><a href="https://www.linkedin.com/company/16439" title="LinkedIn" newtab="newtab" class="gf-social-linkedin"><i class="fab fa-linkedin-in" style="font-size: 1.5rem;"></i></a><a href="https://twitter.com/brightcove" title="Twitter" newtab="newtab" class="gf-social-twitter"><i class="fab fa-twitter" style="font-size: 1.5rem;"></i></a><a href="https://www.facebook.com/Brightcove" title="Facebook" newtab="newtab" class="gf-social-facebook"><i class="fab fa-facebook-f" style="font-size: 1.5rem;"></i></a>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<script>
-      
-  var searchBox = sajari.init({
-    mode: "search-box",
-    project: "1588255093746585379", // Set this to your project.
-    collection: "brightcove-documenation", // Set this to your collection.
-    instantPipeline: "autocomplete", // Pipeline used as you type
-    inputPlaceholder: "Search", // Input element placeholder
-    maxSuggestions: 5, // Maximum number of suggestions to show
-    attachSearchBox: document.getElementById("nav-search-box") // DOM element to attach to
-  });
-  
-    searchBox("sub", "pipeline.search-sent", function (_, query) {
-      window.location = "/search.html?q=" + encodeURIComponent(query.q);
-    });
-  
-
-</script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="https://support.brightcove.com/site-assets/js/site/https-fix.js"></script>
-  <script src="https://support.brightcove.com/site-assets/js/site/setDate.js"></script>
-  
-  <script src="https://support.brightcove.com/site-assets/js/site/prism.js"></script>
-  
-  <script src="https://support.brightcove.com/site-assets/js/site/site.js"></script>
-  <script src="https://support.brightcove.com/site-assets/js/site/tabs.js"></script>
-  <script src="https://support.brightcove.com/site-assets/js/site/toc.js"></script>
-  <script src="/assets/js/sites_nav.js"></script>
-  <script src="https://support.brightcove.com/site-assets/js/site/bcls-utils.js"></script>
-  <script src="https://support.brightcove.com/site-assets/js/site/local-link-fix.js"></script>
-  <script src="/assets/js/feedback.js"></script>
-  
-  <script src="/assets/js/sajari-search-foot.js"></script>
-  
-  <!-- <script src="/assets/js/sajari-index.js"></script> -->
-  <style>
-    a.sj-paginator__page-number.sj-paginator__page-number--current.css-so0ov7 {
-      background-color: lightblue;
-    }
-    div.sj-tabs__tab {
-      margin-top: 3rem;
-      margin-left: .3rem;
-      border-top-left-radius: .4rem;
-      border-top-right-radius: .4rem;
-      background-color:#e8e8e8;
-    }
-
-    div.sj-tabs__tab.sj-tabs__tab--selected {
-      border-bottom-color: crimson;
-      background-color: #f8f8f8;
-    }
-
-    p.sj-results__result__description.css-p9jvyt {
-      font-size: 1rem;
-    }
-
-    .sj-result__text.css-31l7gp h3 {
-      color: navy;
-      font-size: 1.4rem;
-    }
-    </style>
-
-</body>
-
-</html>

@@ -1,0 +1,523 @@
+---
+title: SSAI-Anzeigenverfolgungsprotokoll
+description: 'Das SSAI-Anzeigen-Tracking-Protokoll ist eine neue Funktion, die Details zur Funktionsweise von SSAI-Anzeigen liefert. Diese Funktion ist für VOD und Live.'
+parent: Getting Started
+layout: staging
+---
+ <h1>{{ page.title }}</h1>
+<article class="bcls-article">
+  <summary>{{ page.description }}</summary>
+  <section class="bcls-section">
+    <h2 id="Introduction">Einführung</h2>
+    <p>Brightcove bietet Anzeigen-Tracking-Protokolle, die Ihnen helfen, die Leistung Ihrer SSAI-aktivierten Livestreams und Videos aus Sicht der Monetarisierung zu verstehen und Probleme zu beheben. Diese Protokolle enthalten die Anfragen an die Ad-Server: Anzeigenanfragen, Fehler und Tracking-Ereignisse.</p>
+    <p>Mithilfe der Protokolle können Sie auch Leistungsmesswerte berechnen:</p>
+    <ul>
+      <li>Anzeigenanfragen: Häufigkeit, mit der ein Ad Server nach einer Anzeige gefragt wurde.</li>
+      <li>Anzeigenimpressionen (erfordert das Ereignis "Anzeigenstart-Tracking"): Wie oft eine Anzeige wiedergegeben wird. Das Ereignis wird ausgelöst, wenn das erste Segment angefordert wird.</li>
+      <li>Anzeigenvervollständigung (erfordert das Ereignis "Nachverfolgung der Anzeigenvervollständigung"): Anzahl der bis zum Ende angesehenen Anzeigen.</li>
+      <li>Anzeigenlieferungsrate: Das Verhältnis von Anzeigenimpressionen zu angeforderten Anzeigen in Prozent.</li>
+    </ul>
+  </section>
+  <section class="bcls-section">
+    <h2 id="Setup">Einrichten</h2>
+    <p>Um SSAI-Anzeigenverfolgungsprotokolle zu aktivieren, müssen Sie Folgendes tun:</p>
+    <ol class="bcls-tasklist-restart">
+      <li>Erstellen Sie einen S3-Bucket in Ihrer bevorzugten Region.</li>
+      <li>Geben Sie Brightcove Support den Namen Ihres Buckets und die Region an.</li>
+      <li>Fügen Sie die vom Support bereitgestellte Sicherheitsrichtlinie hinzu, damit Brightcove in Ihren Bucket schreiben kann.</li>
+    </ol>
+    <aside class="bcls-aside bcls-aside--information language-editable">Beachten Sie, dass das automatische Senden von Protokollen an einen S3-Bucket optional ist. Wenn Sie dies nicht möchten, können Sie dennoch Logs beim <a href="https://supportportal.brightcove.com/s/login/?">Brightcove Support anfordern</a>.</aside>
+  </section>
+  <section class="bcls-section">
+    <h2 id="Sample_log_entries">Beispielprotokolleinträge</h2>
+    <p>Im Folgenden finden Sie einige Beispielprotokolleinträge.</p>
+    <details>
+      <summary>Beispielprotokolleintrag: Kreativ</summary>
+<pre class="line-numbers"><code class="language-json" translate="No">{
+  "session_id": "9b393cbf9a4d4528a850c79a283b8b25",
+  "summary_id": "adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25",
+  "adbreak_id": "adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b",
+  "account_id": "5132998201001",
+  "live_account_id": "ee891cf3ebd340ff8ebe560cf292c40b",
+  "live_job_id": "c2ffdf12535b468fa4c88338824571f9",
+  "kind": "Creative",
+  "timestamp": "2021-06-28T23:12:09.632710435Z",
+  "span_id": 3223646445953404770,
+  "parent_span_id": 3004116763771491424,
+  "state": "active",
+  "fk": "qaads-subaru-dogtested",
+  "source_url": "http://test-ads.bcovlive.io/ads/subaru/dog_tested_subaru.mp4"
+}</code></pre>
+    </details>
+    <details>
+      <summary>Beispielprotokolleintrag: Anzeigenanfrage</summary>
+<pre class="line-numbers"><code class="language-json" translate="No">{
+  "session_id": "9b393cbf9a4d4528a850c79a283b8b25",
+  "summary_id": "adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25",
+  "adbreak_id": "adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b",
+  "account_id": "5132998201001",
+  "live_account_id": "ee891cf3ebd340ff8ebe560cf292c40b",
+  "live_job_id": "c2ffdf12535b468fa4c88338824571f9",
+  "kind": "AdRequest",
+  "timestamp": "2021-06-28T23:12:09.585696184Z",
+  "span_id": 5596747569705325007,
+  "parent_span_id": 5124250183191295144,
+  "url": "http://test-ads.bcovlive.io/ads/subaru/subaru-dogtested.xml",
+  "request_headers": {
+    "Referer": [
+      "https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"
+    ],
+    "User-Agent": [
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"
+    ],
+    "X-Forwarded-For": [
+      "50.207.17.164"
+    ]
+  },
+  "response_headers": {
+    "Accept-Ranges": [
+      "bytes"
+    ],
+    "Age": [
+      "66004"
+    ],
+    "Connection": [
+      "keep-alive"
+    ],
+    "Content-Length": [
+      "3813"
+    ],
+    "Content-Type": [
+      "application/xml"
+    ],
+    "Date": [
+      "Mon, 28 Jun 2021 04:52:06 GMT"
+    ],
+    "Etag": [
+      "\"0801eec0f0f1c1378b409f0b1eaa241e\""
+    ],
+    "Last-Modified": [
+      "Wed, 28 Dec 2016 20:10:29 GMT"
+    ],
+    "Server": [
+      "AmazonS3"
+    ],
+    "Via": [
+      "1.1 56c69262ecfa7873b40572ba8a323243.cloudfront.net (CloudFront)"
+    ],
+    "X-Amz-Cf-Id": [
+      "2SvJiWD30gamE4-w6KL3z9shrGpU2ZAvujfsBTJbC9KSoAy0UDzDBw=="
+    ],
+    "X-Amz-Cf-Pop": [
+      "HIO50-C1"
+    ],
+    "X-Cache": [
+      "Hit from cloudfront"
+    ]
+  },
+  "status_code": 200,
+  "response_body": "PFZBU1QgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOm5vTmFtZXNwYWNlU2NoZW1hTG9jYXRpb249InZhc3QueHNkIj4KICA8QWQgaWQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQiPgogICAgPEluTGluZT4KICAgICAgPEFkU3lzdGVtPmpzcWE8L0FkU3lzdGVtPgogICAgICA8QWRUaXRsZT5TdWJhcnUgRG9nIFRlc3RlZDwvQWRUaXRsZT4KICAgICAgPEltcHJlc3Npb24gaWQ9IlVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9aW1wcmVzc2lvbl1dPjwvSW1wcmVzc2lvbj4KICAgICAgPENyZWF0aXZlcz4KICAgICAgICA8Q3JlYXRpdmUgQWRJRD0icWFhZHMtc3ViYXJ1LWRvZ3Rlc3RlZCI+CiAgICAgICAgICA8TGluZWFyPgogICAgICAgICAgICA8RHVyYXRpb24+MDA6MDA6MzAuMzcyPC9EdXJhdGlvbj4KICAgICAgICAgICAgPFRyYWNraW5nRXZlbnRzPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iZmlyc3RRdWFydGlsZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1maXJzdFF1YXJ0aWxlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9Im1pZHBvaW50Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW1pZHBvaW50XV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InRoaXJkUXVhcnRpbGUiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9dGhpcmRRdWFydGlsZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb21wbGV0ZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb21wbGV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJtdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW11dGVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0idW5tdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXVubXV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb2xsYXBzZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb2xsYXBzZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJleHBhbmQiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9ZXhwYW5kXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InBhdXNlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXBhdXNlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InJlc3VtZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1yZXN1bWVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0icmV3aW5kIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXJld2luZF1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJhY2NlcHRJbnZpdGF0aW9uIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWFjY2VwdGludml0YXRpb25dXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY2xvc2UiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xvc2VdXT48L1RyYWNraW5nPgogICAgICAgICAgICA8L1RyYWNraW5nRXZlbnRzPgogICAgICAgICAgICA8VmlkZW9DbGlja3M+CiAgICAgICAgICAgICAgPENsaWNrVHJhY2tpbmcgaWQ9InVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xpY2t0cmFja2luZ11dPjwvQ2xpY2tUcmFja2luZz4KICAgICAgICAgICAgPC9WaWRlb0NsaWNrcz4KICAgICAgICAgICAgPE1lZGlhRmlsZXM+CiAgICAgICAgICAgICAgPE1lZGlhRmlsZSBkZWxpdmVyeT0icHJvZ3Jlc3NpdmUiIGhlaWdodD0iMCIgdHlwZT0idmlkZW8vbXA0IiB3aWR0aD0iMCI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvZG9nX3Rlc3RlZF9zdWJhcnUubXA0XV0+PC9NZWRpYUZpbGU+CiAgICAgICAgICAgIDwvTWVkaWFGaWxlcz4KICAgICAgICAgIDwvTGluZWFyPgogICAgICAgIDwvQ3JlYXRpdmU+CiAgICAgICAgPENyZWF0aXZlIEFkSUQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQtYmFubmVyIiA+CiAgICAgICAgICA8Q29tcGFuaW9uQWRzPgogICAgICAgICAgICA8Q29tcGFuaW9uIHdpZHRoPSIxMTMwIiBoZWlnaHQ9IjE1MCIgaWQ9ImRvZyI+CiAgICAgICAgICAgICAgPFN0YXRpY1Jlc291cmNlIGNyZWF0aXZlVHlwZT0iaW1hZ2UvanBlZyI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvc3ViYXJ1LWJhbm5lci5qcGddXT48L1N0YXRpY1Jlc291cmNlPgogICAgICAgICAgICAgIDxUcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY3JlYXRpdmVWaWV3Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWNyZWF0aXZlVmlld11dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPC9UcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICA8Q29tcGFuaW9uQ2xpY2tUaHJvdWdoPjwhW0NEQVRBW2h0dHA6Ly93d3cuc3ViYXJ1LmNvbS9dXT48L0NvbXBhbmlvbkNsaWNrVGhyb3VnaD4KICAgICAgICAgICAgPC9Db21wYW5pb24+CiAgICAgICAgICA8L0NvbXBhbmlvbkFkcz4KICAgICAgICA8L0NyZWF0aXZlPgogICAgICA8L0NyZWF0aXZlcz4KICAgICAgPEV4dGVuc2lvbnM+CiAgICAgICAgPEV4dGVuc2lvbiB0eXBlPSJuYW1lIj4KICAgICAgICAgIDxBZFNlcnZpbmdEYXRhPgogICAgICAgICAgICA8RGVsaXZlcnlEYXRhPgogICAgICAgICAgICAgIDxHZW9EYXRhPjwhW0NEQVRBW2N0PVVTJnN0PUFaJmFjPTQ4MCZ6cD04NTI4MiZidz00JmRtYT0xNzMmY2l0eT0xMzMwNV1dPjwvR2VvRGF0YT4KICAgICAgICAgICAgPC9EZWxpdmVyeURhdGE+CiAgICAgICAgICA8L0FkU2VydmluZ0RhdGE+CiAgICAgICAgPC9FeHRlbnNpb24+CiAgICAgIDwvRXh0ZW5zaW9ucz4KICAgIDwvSW5MaW5lPgogIDwvQWQ+CjwvVkFTVD4K",
+  "duration": 1910203645,
+  "provider": "vast_3"
+}</code></pre>
+    </details>
+    <details>
+      <summary>Beispielprotokolleintrag: Sitzungszusammenfassung</summary>
+<pre class="line-numbers"><code class="language-json" translate="No">{
+  "account_id": "5132998201001",
+  "session_id": "9b393cbf9a4d4528a850c79a283b8b25",
+  "live_account_id": "ee891cf3ebd340ff8ebe560cf292c40b",
+  "live_job_id": "c2ffdf12535b468fa4c88338824571f9",
+  "live_app_id": "a51db89789e0413a87ee356bed6965b0",
+  "region": "us-west-2",
+  "kind": "SessionSummary",
+  "duration": 1923000000,
+  "status_code": 200,
+  "timestamp": "2021-06-28T23:12:11.499Z",
+  "adbreak_id": "adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b",
+  "summary_id": "adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25",
+  "odur": 32000000000,
+  "rdur": 32000000000,
+  "sdur": 34000000000,
+  "ad_count": 1,
+  "client_only_tracking": false,
+  "sls": false,
+  "ads": [
+    {
+      "type": "midroll",
+      "fk": "qaads-subaru-dogtested",
+      "imps": [
+        {
+          "type": "AdStart",
+          "url": "https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression"
+        },
+        {
+          "type": "AdFirstQuartile",
+          "url": "https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=firstQuartile"
+        },
+        {
+          "type": "AdMidpoint",
+          "url": "https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=midpoint"
+        },
+        {
+          "type": "AdThirdQuartile",
+          "url": "https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=thirdQuartile"
+        },
+        {
+          "type": "AdComplete",
+          "url": "https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=complete"
+        }
+      ],
+      "cdur": 30322000000
+    }
+  ]
+}</code></pre>
+    </details>
+    <h3>Vollständige Charge</h3>
+    <p>Die obigen Beispiele sind separate Einträge. Brightcove aggregiert diese getrennt durch neue Zeilen und schreibt das aggregierte Protokoll in Ihren S3-Bucket. Unten sehen Sie ein Beispiel für eine vollständige Protokolldatei.</p>
+    <details>
+      <summary>Beispiel einer vollständigen Protokolldatei</summary>
+<pre class="line-numbers"><code class="language-json" translate="No">{"session_id":"9b393cbf9a4d4528a850c79a283b8b25","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b","account_id":"5132998201001","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","kind":"Creative","timestamp":"2021-06-28T23:12:09.632710435Z","span_id":3223646445953404770,"parent_span_id":3004116763771491424,"state":"active","fk":"qaads-subaru-dogtested","source_url":"http://test-ads.bcovlive.io/ads/subaru/dog_tested_subaru.mp4"}
+  {"session_id":"9b393cbf9a4d4528a850c79a283b8b25","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b","account_id":"5132998201001","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","kind":"AdRequest","timestamp":"2021-06-28T23:12:09.585696184Z","span_id":5596747569705325007,"parent_span_id":5124250183191295144,"url":"http://test-ads.bcovlive.io/ads/subaru/subaru-dogtested.xml","request_headers":{"Referer":["https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"],"User-Agent":["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"],"X-Forwarded-For":["50.207.17.164"]},"response_headers":{"Accept-Ranges":["bytes"],"Age":["66004"],"Connection":["keep-alive"],"Content-Length":["3813"],"Content-Type":["application/xml"],"Date":["Mon, 28 Jun 2021 04:52:06 GMT"],"Etag":["\"0801eec0f0f1c1378b409f0b1eaa241e\""],"Last-Modified":["Wed, 28 Dec 2016 20:10:29 GMT"],"Server":["AmazonS3"],"Via":["1.1 56c69262ecfa7873b40572ba8a323243.cloudfront.net (CloudFront)"],"X-Amz-Cf-Id":["2SvJiWD30gamE4-w6KL3z9shrGpU2ZAvujfsBTJbC9KSoAy0UDzDBw=="],"X-Amz-Cf-Pop":["HIO50-C1"],"X-Cache":["Hit from cloudfront"]},"status_code":200,"response_body":"PFZBU1QgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOm5vTmFtZXNwYWNlU2NoZW1hTG9jYXRpb249InZhc3QueHNkIj4KICA8QWQgaWQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQiPgogICAgPEluTGluZT4KICAgICAgPEFkU3lzdGVtPmpzcWE8L0FkU3lzdGVtPgogICAgICA8QWRUaXRsZT5TdWJhcnUgRG9nIFRlc3RlZDwvQWRUaXRsZT4KICAgICAgPEltcHJlc3Npb24gaWQ9IlVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9aW1wcmVzc2lvbl1dPjwvSW1wcmVzc2lvbj4KICAgICAgPENyZWF0aXZlcz4KICAgICAgICA8Q3JlYXRpdmUgQWRJRD0icWFhZHMtc3ViYXJ1LWRvZ3Rlc3RlZCI+CiAgICAgICAgICA8TGluZWFyPgogICAgICAgICAgICA8RHVyYXRpb24+MDA6MDA6MzAuMzcyPC9EdXJhdGlvbj4KICAgICAgICAgICAgPFRyYWNraW5nRXZlbnRzPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iZmlyc3RRdWFydGlsZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1maXJzdFF1YXJ0aWxlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9Im1pZHBvaW50Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW1pZHBvaW50XV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InRoaXJkUXVhcnRpbGUiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9dGhpcmRRdWFydGlsZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb21wbGV0ZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb21wbGV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJtdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW11dGVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0idW5tdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXVubXV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb2xsYXBzZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb2xsYXBzZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJleHBhbmQiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9ZXhwYW5kXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InBhdXNlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXBhdXNlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InJlc3VtZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1yZXN1bWVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0icmV3aW5kIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXJld2luZF1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJhY2NlcHRJbnZpdGF0aW9uIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWFjY2VwdGludml0YXRpb25dXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY2xvc2UiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xvc2VdXT48L1RyYWNraW5nPgogICAgICAgICAgICA8L1RyYWNraW5nRXZlbnRzPgogICAgICAgICAgICA8VmlkZW9DbGlja3M+CiAgICAgICAgICAgICAgPENsaWNrVHJhY2tpbmcgaWQ9InVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xpY2t0cmFja2luZ11dPjwvQ2xpY2tUcmFja2luZz4KICAgICAgICAgICAgPC9WaWRlb0NsaWNrcz4KICAgICAgICAgICAgPE1lZGlhRmlsZXM+CiAgICAgICAgICAgICAgPE1lZGlhRmlsZSBkZWxpdmVyeT0icHJvZ3Jlc3NpdmUiIGhlaWdodD0iMCIgdHlwZT0idmlkZW8vbXA0IiB3aWR0aD0iMCI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvZG9nX3Rlc3RlZF9zdWJhcnUubXA0XV0+PC9NZWRpYUZpbGU+CiAgICAgICAgICAgIDwvTWVkaWFGaWxlcz4KICAgICAgICAgIDwvTGluZWFyPgogICAgICAgIDwvQ3JlYXRpdmU+CiAgICAgICAgPENyZWF0aXZlIEFkSUQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQtYmFubmVyIiA+CiAgICAgICAgICA8Q29tcGFuaW9uQWRzPgogICAgICAgICAgICA8Q29tcGFuaW9uIHdpZHRoPSIxMTMwIiBoZWlnaHQ9IjE1MCIgaWQ9ImRvZyI+CiAgICAgICAgICAgICAgPFN0YXRpY1Jlc291cmNlIGNyZWF0aXZlVHlwZT0iaW1hZ2UvanBlZyI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvc3ViYXJ1LWJhbm5lci5qcGddXT48L1N0YXRpY1Jlc291cmNlPgogICAgICAgICAgICAgIDxUcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY3JlYXRpdmVWaWV3Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWNyZWF0aXZlVmlld11dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPC9UcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICA8Q29tcGFuaW9uQ2xpY2tUaHJvdWdoPjwhW0NEQVRBW2h0dHA6Ly93d3cuc3ViYXJ1LmNvbS9dXT48L0NvbXBhbmlvbkNsaWNrVGhyb3VnaD4KICAgICAgICAgICAgPC9Db21wYW5pb24+CiAgICAgICAgICA8L0NvbXBhbmlvbkFkcz4KICAgICAgICA8L0NyZWF0aXZlPgogICAgICA8L0NyZWF0aXZlcz4KICAgICAgPEV4dGVuc2lvbnM+CiAgICAgICAgPEV4dGVuc2lvbiB0eXBlPSJuYW1lIj4KICAgICAgICAgIDxBZFNlcnZpbmdEYXRhPgogICAgICAgICAgICA8RGVsaXZlcnlEYXRhPgogICAgICAgICAgICAgIDxHZW9EYXRhPjwhW0NEQVRBW2N0PVVTJnN0PUFaJmFjPTQ4MCZ6cD04NTI4MiZidz00JmRtYT0xNzMmY2l0eT0xMzMwNV1dPjwvR2VvRGF0YT4KICAgICAgICAgICAgPC9EZWxpdmVyeURhdGE+CiAgICAgICAgICA8L0FkU2VydmluZ0RhdGE+CiAgICAgICAgPC9FeHRlbnNpb24+CiAgICAgIDwvRXh0ZW5zaW9ucz4KICAgIDwvSW5MaW5lPgogIDwvQWQ+CjwvVkFTVD4K","duration":1910203645,"provider":"vast_3"}
+  {"account_id":"5132998201001","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","live_app_id":"a51db89789e0413a87ee356bed6965b0","region":"us-west-2","kind":"SessionSummary","duration":1923000000,"status_code":200,"timestamp":"2021-06-28T23:12:11.499Z","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25","odur":32000000000,"rdur":32000000000,"sdur":34000000000,"ad_count":1,"client_only_tracking":false,"sls":false,"ads":[{"type":"midroll","fk":"qaads-subaru-dogtested","imps":[{"type":"AdStart","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression"},{"type":"AdFirstQuartile","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=firstQuartile"},{"type":"AdMidpoint","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=midpoint"},{"type":"AdThirdQuartile","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=thirdQuartile"},{"type":"AdComplete","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=complete"}],"cdur":30322000000}]}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdStart","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:12:11.499Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":114524248.00000153}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdFirstQuartile","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:12:11.501Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=firstQuartile","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":94157248.00014868}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdMidpoint","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:12:11.502Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=midpoint","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":9150570.999830961}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdThirdQuartile","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:12:11.503Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=thirdQuartile","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":13312409.999780357}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdComplete","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-0e96c29df5214a4195e7e94f9cf90c8b","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:12:11.504Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=complete","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":12268809.00003016}
+  {"session_id":"9b393cbf9a4d4528a850c79a283b8b25","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c","account_id":"5132998201001","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","kind":"Creative","timestamp":"2021-06-28T23:14:35.099703094Z","span_id":6674394482725440815,"parent_span_id":1318535851542687167,"state":"active","fk":"qaads-subaru-dogtested","source_url":"http://test-ads.bcovlive.io/ads/subaru/dog_tested_subaru.mp4"}
+  {"session_id":"9b393cbf9a4d4528a850c79a283b8b25","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c","account_id":"5132998201001","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","kind":"AdRequest","timestamp":"2021-06-28T23:14:35.037747217Z","span_id":879241329021924545,"parent_span_id":2738404345413976285,"url":"http://test-ads.bcovlive.io/ads/subaru/subaru-dogtested.xml","request_headers":{"Referer":["https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"],"User-Agent":["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"],"X-Forwarded-For":["50.207.17.164"]},"response_headers":{"Accept-Ranges":["bytes"],"Age":["66150"],"Connection":["keep-alive"],"Content-Length":["3813"],"Content-Type":["application/xml"],"Date":["Mon, 28 Jun 2021 04:52:06 GMT"],"Etag":["\"0801eec0f0f1c1378b409f0b1eaa241e\""],"Last-Modified":["Wed, 28 Dec 2016 20:10:29 GMT"],"Server":["AmazonS3"],"Via":["1.1 1b0911478686968732f973d6e5e31d11.cloudfront.net (CloudFront)"],"X-Amz-Cf-Id":["gwjYU97w_Ko7_VOEJo_I7mQIia4aUxI6NhpL79QBwcGovwgqsiQQ2Q=="],"X-Amz-Cf-Pop":["HIO50-C1"],"X-Cache":["Hit from cloudfront"]},"status_code":200,"response_body":"PFZBU1QgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOm5vTmFtZXNwYWNlU2NoZW1hTG9jYXRpb249InZhc3QueHNkIj4KICA8QWQgaWQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQiPgogICAgPEluTGluZT4KICAgICAgPEFkU3lzdGVtPmpzcWE8L0FkU3lzdGVtPgogICAgICA8QWRUaXRsZT5TdWJhcnUgRG9nIFRlc3RlZDwvQWRUaXRsZT4KICAgICAgPEltcHJlc3Npb24gaWQ9IlVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9aW1wcmVzc2lvbl1dPjwvSW1wcmVzc2lvbj4KICAgICAgPENyZWF0aXZlcz4KICAgICAgICA8Q3JlYXRpdmUgQWRJRD0icWFhZHMtc3ViYXJ1LWRvZ3Rlc3RlZCI+CiAgICAgICAgICA8TGluZWFyPgogICAgICAgICAgICA8RHVyYXRpb24+MDA6MDA6MzAuMzcyPC9EdXJhdGlvbj4KICAgICAgICAgICAgPFRyYWNraW5nRXZlbnRzPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iZmlyc3RRdWFydGlsZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1maXJzdFF1YXJ0aWxlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9Im1pZHBvaW50Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW1pZHBvaW50XV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InRoaXJkUXVhcnRpbGUiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9dGhpcmRRdWFydGlsZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb21wbGV0ZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb21wbGV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJtdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW11dGVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0idW5tdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXVubXV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb2xsYXBzZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb2xsYXBzZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJleHBhbmQiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9ZXhwYW5kXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InBhdXNlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXBhdXNlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InJlc3VtZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1yZXN1bWVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0icmV3aW5kIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXJld2luZF1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJhY2NlcHRJbnZpdGF0aW9uIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWFjY2VwdGludml0YXRpb25dXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY2xvc2UiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xvc2VdXT48L1RyYWNraW5nPgogICAgICAgICAgICA8L1RyYWNraW5nRXZlbnRzPgogICAgICAgICAgICA8VmlkZW9DbGlja3M+CiAgICAgICAgICAgICAgPENsaWNrVHJhY2tpbmcgaWQ9InVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xpY2t0cmFja2luZ11dPjwvQ2xpY2tUcmFja2luZz4KICAgICAgICAgICAgPC9WaWRlb0NsaWNrcz4KICAgICAgICAgICAgPE1lZGlhRmlsZXM+CiAgICAgICAgICAgICAgPE1lZGlhRmlsZSBkZWxpdmVyeT0icHJvZ3Jlc3NpdmUiIGhlaWdodD0iMCIgdHlwZT0idmlkZW8vbXA0IiB3aWR0aD0iMCI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvZG9nX3Rlc3RlZF9zdWJhcnUubXA0XV0+PC9NZWRpYUZpbGU+CiAgICAgICAgICAgIDwvTWVkaWFGaWxlcz4KICAgICAgICAgIDwvTGluZWFyPgogICAgICAgIDwvQ3JlYXRpdmU+CiAgICAgICAgPENyZWF0aXZlIEFkSUQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQtYmFubmVyIiA+CiAgICAgICAgICA8Q29tcGFuaW9uQWRzPgogICAgICAgICAgICA8Q29tcGFuaW9uIHdpZHRoPSIxMTMwIiBoZWlnaHQ9IjE1MCIgaWQ9ImRvZyI+CiAgICAgICAgICAgICAgPFN0YXRpY1Jlc291cmNlIGNyZWF0aXZlVHlwZT0iaW1hZ2UvanBlZyI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvc3ViYXJ1LWJhbm5lci5qcGddXT48L1N0YXRpY1Jlc291cmNlPgogICAgICAgICAgICAgIDxUcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY3JlYXRpdmVWaWV3Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWNyZWF0aXZlVmlld11dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPC9UcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICA8Q29tcGFuaW9uQ2xpY2tUaHJvdWdoPjwhW0NEQVRBW2h0dHA6Ly93d3cuc3ViYXJ1LmNvbS9dXT48L0NvbXBhbmlvbkNsaWNrVGhyb3VnaD4KICAgICAgICAgICAgPC9Db21wYW5pb24+CiAgICAgICAgICA8L0NvbXBhbmlvbkFkcz4KICAgICAgICA8L0NyZWF0aXZlPgogICAgICA8L0NyZWF0aXZlcz4KICAgICAgPEV4dGVuc2lvbnM+CiAgICAgICAgPEV4dGVuc2lvbiB0eXBlPSJuYW1lIj4KICAgICAgICAgIDxBZFNlcnZpbmdEYXRhPgogICAgICAgICAgICA8RGVsaXZlcnlEYXRhPgogICAgICAgICAgICAgIDxHZW9EYXRhPjwhW0NEQVRBW2N0PVVTJnN0PUFaJmFjPTQ4MCZ6cD04NTI4MiZidz00JmRtYT0xNzMmY2l0eT0xMzMwNV1dPjwvR2VvRGF0YT4KICAgICAgICAgICAgPC9EZWxpdmVyeURhdGE+CiAgICAgICAgICA8L0FkU2VydmluZ0RhdGE+CiAgICAgICAgPC9FeHRlbnNpb24+CiAgICAgIDwvRXh0ZW5zaW9ucz4KICAgIDwvSW5MaW5lPgogIDwvQWQ+CjwvVkFTVD4K","duration":62517876,"provider":"vast_3"}
+  {"account_id":"5132998201001","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","live_app_id":"a51db89789e0413a87ee356bed6965b0","region":"us-west-2","kind":"SessionSummary","duration":74000000,"status_code":200,"timestamp":"2021-06-28T23:14:35.103Z","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c-9b393cbf9a4d4528a850c79a283b8b25","odur":32000000000,"rdur":32000000000,"sdur":34000000000,"ad_count":1,"client_only_tracking":false,"sls":false,"ads":[{"type":"midroll","fk":"qaads-subaru-dogtested","imps":[{"type":"AdStart","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression"},{"type":"AdFirstQuartile","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=firstQuartile"},{"type":"AdMidpoint","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=midpoint"},{"type":"AdThirdQuartile","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=thirdQuartile"},{"type":"AdComplete","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=complete"}],"cdur":30322000000}]}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdStart","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:14:35.104Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":68253645.00004798}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdFirstQuartile","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:14:35.105Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=firstQuartile","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":73142498.99983406}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdMidpoint","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:14:35.106Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=midpoint","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":7360496.000153944}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdThirdQuartile","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:14:35.107Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=thirdQuartile","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":15530145.999975502}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdComplete","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c-9b393cbf9a4d4528a850c79a283b8b25","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-522e68923faf435ebc5710ec9ba12f8c","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"9b393cbf9a4d4528a850c79a283b8b25","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:14:35.108Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=complete","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":18099798.00018482}
+  {"session_id":"3799e473b53d47c1a4aba1a96282ae63","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115","account_id":"5132998201001","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","kind":"Creative","timestamp":"2021-06-28T23:17:50.848526142Z","span_id":1072414950932142870,"parent_span_id":3759119308175968927,"state":"active","fk":"qaads-subaru-dogtested","source_url":"http://test-ads.bcovlive.io/ads/subaru/dog_tested_subaru.mp4"}
+  {"session_id":"3799e473b53d47c1a4aba1a96282ae63","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115","account_id":"5132998201001","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","kind":"AdRequest","timestamp":"2021-06-28T23:17:50.803309913Z","span_id":5501083171814814828,"parent_span_id":2777154131847882503,"url":"http://test-ads.bcovlive.io/ads/subaru/subaru-dogtested.xml","request_headers":{"Referer":["https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"],"User-Agent":["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"],"X-Forwarded-For":["50.207.17.164"]},"response_headers":{"Accept-Ranges":["bytes"],"Age":["66345"],"Connection":["keep-alive"],"Content-Length":["3813"],"Content-Type":["application/xml"],"Date":["Mon, 28 Jun 2021 04:52:06 GMT"],"Etag":["\"0801eec0f0f1c1378b409f0b1eaa241e\""],"Last-Modified":["Wed, 28 Dec 2016 20:10:29 GMT"],"Server":["AmazonS3"],"Via":["1.1 1cc6ed0d2d3dd9529ce544f9dfe61a53.cloudfront.net (CloudFront)"],"X-Amz-Cf-Id":["6ChJOWTNhXQ54nrI-0NfiI3HELyzVmDKFmi-6JhCYyzzcnh-FejM5A=="],"X-Amz-Cf-Pop":["HIO50-C1"],"X-Cache":["Hit from cloudfront"]},"status_code":200,"response_body":"PFZBU1QgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOm5vTmFtZXNwYWNlU2NoZW1hTG9jYXRpb249InZhc3QueHNkIj4KICA8QWQgaWQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQiPgogICAgPEluTGluZT4KICAgICAgPEFkU3lzdGVtPmpzcWE8L0FkU3lzdGVtPgogICAgICA8QWRUaXRsZT5TdWJhcnUgRG9nIFRlc3RlZDwvQWRUaXRsZT4KICAgICAgPEltcHJlc3Npb24gaWQ9IlVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9aW1wcmVzc2lvbl1dPjwvSW1wcmVzc2lvbj4KICAgICAgPENyZWF0aXZlcz4KICAgICAgICA8Q3JlYXRpdmUgQWRJRD0icWFhZHMtc3ViYXJ1LWRvZ3Rlc3RlZCI+CiAgICAgICAgICA8TGluZWFyPgogICAgICAgICAgICA8RHVyYXRpb24+MDA6MDA6MzAuMzcyPC9EdXJhdGlvbj4KICAgICAgICAgICAgPFRyYWNraW5nRXZlbnRzPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iZmlyc3RRdWFydGlsZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1maXJzdFF1YXJ0aWxlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9Im1pZHBvaW50Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW1pZHBvaW50XV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InRoaXJkUXVhcnRpbGUiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9dGhpcmRRdWFydGlsZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb21wbGV0ZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb21wbGV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJtdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW11dGVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0idW5tdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXVubXV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb2xsYXBzZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb2xsYXBzZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJleHBhbmQiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9ZXhwYW5kXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InBhdXNlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXBhdXNlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InJlc3VtZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1yZXN1bWVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0icmV3aW5kIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXJld2luZF1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJhY2NlcHRJbnZpdGF0aW9uIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWFjY2VwdGludml0YXRpb25dXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY2xvc2UiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xvc2VdXT48L1RyYWNraW5nPgogICAgICAgICAgICA8L1RyYWNraW5nRXZlbnRzPgogICAgICAgICAgICA8VmlkZW9DbGlja3M+CiAgICAgICAgICAgICAgPENsaWNrVHJhY2tpbmcgaWQ9InVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xpY2t0cmFja2luZ11dPjwvQ2xpY2tUcmFja2luZz4KICAgICAgICAgICAgPC9WaWRlb0NsaWNrcz4KICAgICAgICAgICAgPE1lZGlhRmlsZXM+CiAgICAgICAgICAgICAgPE1lZGlhRmlsZSBkZWxpdmVyeT0icHJvZ3Jlc3NpdmUiIGhlaWdodD0iMCIgdHlwZT0idmlkZW8vbXA0IiB3aWR0aD0iMCI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvZG9nX3Rlc3RlZF9zdWJhcnUubXA0XV0+PC9NZWRpYUZpbGU+CiAgICAgICAgICAgIDwvTWVkaWFGaWxlcz4KICAgICAgICAgIDwvTGluZWFyPgogICAgICAgIDwvQ3JlYXRpdmU+CiAgICAgICAgPENyZWF0aXZlIEFkSUQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQtYmFubmVyIiA+CiAgICAgICAgICA8Q29tcGFuaW9uQWRzPgogICAgICAgICAgICA8Q29tcGFuaW9uIHdpZHRoPSIxMTMwIiBoZWlnaHQ9IjE1MCIgaWQ9ImRvZyI+CiAgICAgICAgICAgICAgPFN0YXRpY1Jlc291cmNlIGNyZWF0aXZlVHlwZT0iaW1hZ2UvanBlZyI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvc3ViYXJ1LWJhbm5lci5qcGddXT48L1N0YXRpY1Jlc291cmNlPgogICAgICAgICAgICAgIDxUcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY3JlYXRpdmVWaWV3Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWNyZWF0aXZlVmlld11dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPC9UcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICA8Q29tcGFuaW9uQ2xpY2tUaHJvdWdoPjwhW0NEQVRBW2h0dHA6Ly93d3cuc3ViYXJ1LmNvbS9dXT48L0NvbXBhbmlvbkNsaWNrVGhyb3VnaD4KICAgICAgICAgICAgPC9Db21wYW5pb24+CiAgICAgICAgICA8L0NvbXBhbmlvbkFkcz4KICAgICAgICA8L0NyZWF0aXZlPgogICAgICA8L0NyZWF0aXZlcz4KICAgICAgPEV4dGVuc2lvbnM+CiAgICAgICAgPEV4dGVuc2lvbiB0eXBlPSJuYW1lIj4KICAgICAgICAgIDxBZFNlcnZpbmdEYXRhPgogICAgICAgICAgICA8RGVsaXZlcnlEYXRhPgogICAgICAgICAgICAgIDxHZW9EYXRhPjwhW0NEQVRBW2N0PVVTJnN0PUFaJmFjPTQ4MCZ6cD04NTI4MiZidz00JmRtYT0xNzMmY2l0eT0xMzMwNV1dPjwvR2VvRGF0YT4KICAgICAgICAgICAgPC9EZWxpdmVyeURhdGE+CiAgICAgICAgICA8L0FkU2VydmluZ0RhdGE+CiAgICAgICAgPC9FeHRlbnNpb24+CiAgICAgIDwvRXh0ZW5zaW9ucz4KICAgIDwvSW5MaW5lPgogIDwvQWQ+CjwvVkFTVD4K","duration":463516026,"provider":"vast_3"}
+  {"account_id":"5132998201001","session_id":"3799e473b53d47c1a4aba1a96282ae63","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","live_app_id":"a51db89789e0413a87ee356bed6965b0","region":"us-west-2","kind":"SessionSummary","duration":481000000,"status_code":200,"timestamp":"2021-06-28T23:17:51.274Z","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115-3799e473b53d47c1a4aba1a96282ae63","odur":32000000000,"rdur":32000000000,"sdur":34000000000,"ad_count":1,"client_only_tracking":false,"sls":false,"ads":[{"type":"midroll","fk":"qaads-subaru-dogtested","imps":[{"type":"AdStart","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression"},{"type":"AdFirstQuartile","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=firstQuartile"},{"type":"AdMidpoint","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=midpoint"},{"type":"AdThirdQuartile","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=thirdQuartile"},{"type":"AdComplete","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=complete"}],"cdur":30322000000}]}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdStart","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"3799e473b53d47c1a4aba1a96282ae63","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:17:51.276Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":100628732.00001195}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdFirstQuartile","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"3799e473b53d47c1a4aba1a96282ae63","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:17:51.277Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=firstQuartile","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":72044457.99998939}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdMidpoint","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"3799e473b53d47c1a4aba1a96282ae63","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:17:51.278Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=midpoint","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":7449264.000169933}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdThirdQuartile","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"3799e473b53d47c1a4aba1a96282ae63","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:17:51.279Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=thirdQuartile","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":7948938.000015914}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdComplete","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-f1eb781318d847eea4941009c37fd115","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"3799e473b53d47c1a4aba1a96282ae63","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:17:51.280Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=complete","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":9952213.999815285}
+  {"session_id":"3799e473b53d47c1a4aba1a96282ae63","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-20063d6dae794906af1251c6948400db-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-20063d6dae794906af1251c6948400db","account_id":"5132998201001","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","kind":"Creative","timestamp":"2021-06-28T23:21:31.192038303Z","span_id":2134906764417527191,"parent_span_id":8679583036437874814,"state":"active","fk":"qaads-subaru-dogtested","source_url":"http://test-ads.bcovlive.io/ads/subaru/dog_tested_subaru.mp4"}
+  {"session_id":"3799e473b53d47c1a4aba1a96282ae63","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-20063d6dae794906af1251c6948400db-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-20063d6dae794906af1251c6948400db","account_id":"5132998201001","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","kind":"AdRequest","timestamp":"2021-06-28T23:21:31.154993034Z","span_id":8570463038803610161,"parent_span_id":3420437761948447498,"url":"http://test-ads.bcovlive.io/ads/subaru/subaru-dogtested.xml","request_headers":{"Referer":["https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"],"User-Agent":["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"],"X-Forwarded-For":["50.207.17.164"]},"response_headers":{"Accept-Ranges":["bytes"],"Age":["66566"],"Connection":["keep-alive"],"Content-Length":["3813"],"Content-Type":["application/xml"],"Date":["Mon, 28 Jun 2021 04:52:06 GMT"],"Etag":["\"0801eec0f0f1c1378b409f0b1eaa241e\""],"Last-Modified":["Wed, 28 Dec 2016 20:10:29 GMT"],"Server":["AmazonS3"],"Via":["1.1 41e349e25dc4bc856d0e5d2c162428a0.cloudfront.net (CloudFront)"],"X-Amz-Cf-Id":["PdYetvq3mfyZyeYyzW4zBsRGTaopewgHBTkDGKU3d4CgwrKATC8HYQ=="],"X-Amz-Cf-Pop":["HIO50-C1"],"X-Cache":["Hit from cloudfront"]},"status_code":200,"response_body":"PFZBU1QgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOm5vTmFtZXNwYWNlU2NoZW1hTG9jYXRpb249InZhc3QueHNkIj4KICA8QWQgaWQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQiPgogICAgPEluTGluZT4KICAgICAgPEFkU3lzdGVtPmpzcWE8L0FkU3lzdGVtPgogICAgICA8QWRUaXRsZT5TdWJhcnUgRG9nIFRlc3RlZDwvQWRUaXRsZT4KICAgICAgPEltcHJlc3Npb24gaWQ9IlVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9aW1wcmVzc2lvbl1dPjwvSW1wcmVzc2lvbj4KICAgICAgPENyZWF0aXZlcz4KICAgICAgICA8Q3JlYXRpdmUgQWRJRD0icWFhZHMtc3ViYXJ1LWRvZ3Rlc3RlZCI+CiAgICAgICAgICA8TGluZWFyPgogICAgICAgICAgICA8RHVyYXRpb24+MDA6MDA6MzAuMzcyPC9EdXJhdGlvbj4KICAgICAgICAgICAgPFRyYWNraW5nRXZlbnRzPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iZmlyc3RRdWFydGlsZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1maXJzdFF1YXJ0aWxlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9Im1pZHBvaW50Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW1pZHBvaW50XV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InRoaXJkUXVhcnRpbGUiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9dGhpcmRRdWFydGlsZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb21wbGV0ZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb21wbGV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJtdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PW11dGVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0idW5tdXRlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXVubXV0ZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJjb2xsYXBzZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1jb2xsYXBzZV1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJleHBhbmQiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9ZXhwYW5kXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InBhdXNlIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXBhdXNlXV0+PC9UcmFja2luZz4KICAgICAgICAgICAgICA8VHJhY2tpbmcgZXZlbnQ9InJlc3VtZSI+PCFbQ0RBVEFbaHR0cHM6Ly9wcml2YXRlLWY3YzQ5Yi1iY292cWEuYXBpYXJ5LW1vY2suY29tL2FwaS90cmFja2luZz9ldmVudD1yZXN1bWVdXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0icmV3aW5kIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PXJld2luZF1dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPFRyYWNraW5nIGV2ZW50PSJhY2NlcHRJbnZpdGF0aW9uIj48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWFjY2VwdGludml0YXRpb25dXT48L1RyYWNraW5nPgogICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY2xvc2UiPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xvc2VdXT48L1RyYWNraW5nPgogICAgICAgICAgICA8L1RyYWNraW5nRXZlbnRzPgogICAgICAgICAgICA8VmlkZW9DbGlja3M+CiAgICAgICAgICAgICAgPENsaWNrVHJhY2tpbmcgaWQ9InVua25vd24iPjwhW0NEQVRBW2h0dHBzOi8vcHJpdmF0ZS1mN2M0OWItYmNvdnFhLmFwaWFyeS1tb2NrLmNvbS9hcGkvdHJhY2tpbmc/ZXZlbnQ9Y2xpY2t0cmFja2luZ11dPjwvQ2xpY2tUcmFja2luZz4KICAgICAgICAgICAgPC9WaWRlb0NsaWNrcz4KICAgICAgICAgICAgPE1lZGlhRmlsZXM+CiAgICAgICAgICAgICAgPE1lZGlhRmlsZSBkZWxpdmVyeT0icHJvZ3Jlc3NpdmUiIGhlaWdodD0iMCIgdHlwZT0idmlkZW8vbXA0IiB3aWR0aD0iMCI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvZG9nX3Rlc3RlZF9zdWJhcnUubXA0XV0+PC9NZWRpYUZpbGU+CiAgICAgICAgICAgIDwvTWVkaWFGaWxlcz4KICAgICAgICAgIDwvTGluZWFyPgogICAgICAgIDwvQ3JlYXRpdmU+CiAgICAgICAgPENyZWF0aXZlIEFkSUQ9InFhYWRzLXN1YmFydS1kb2d0ZXN0ZWQtYmFubmVyIiA+CiAgICAgICAgICA8Q29tcGFuaW9uQWRzPgogICAgICAgICAgICA8Q29tcGFuaW9uIHdpZHRoPSIxMTMwIiBoZWlnaHQ9IjE1MCIgaWQ9ImRvZyI+CiAgICAgICAgICAgICAgPFN0YXRpY1Jlc291cmNlIGNyZWF0aXZlVHlwZT0iaW1hZ2UvanBlZyI+PCFbQ0RBVEFbaHR0cDovL3Rlc3QtYWRzLmJjb3ZsaXZlLmlvL2Fkcy9zdWJhcnUvc3ViYXJ1LWJhbm5lci5qcGddXT48L1N0YXRpY1Jlc291cmNlPgogICAgICAgICAgICAgIDxUcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICAgIDxUcmFja2luZyBldmVudD0iY3JlYXRpdmVWaWV3Ij48IVtDREFUQVtodHRwczovL3ByaXZhdGUtZjdjNDliLWJjb3ZxYS5hcGlhcnktbW9jay5jb20vYXBpL3RyYWNraW5nP2V2ZW50PWNyZWF0aXZlVmlld11dPjwvVHJhY2tpbmc+CiAgICAgICAgICAgICAgPC9UcmFja2luZ0V2ZW50cz4KICAgICAgICAgICAgICA8Q29tcGFuaW9uQ2xpY2tUaHJvdWdoPjwhW0NEQVRBW2h0dHA6Ly93d3cuc3ViYXJ1LmNvbS9dXT48L0NvbXBhbmlvbkNsaWNrVGhyb3VnaD4KICAgICAgICAgICAgPC9Db21wYW5pb24+CiAgICAgICAgICA8L0NvbXBhbmlvbkFkcz4KICAgICAgICA8L0NyZWF0aXZlPgogICAgICA8L0NyZWF0aXZlcz4KICAgICAgPEV4dGVuc2lvbnM+CiAgICAgICAgPEV4dGVuc2lvbiB0eXBlPSJuYW1lIj4KICAgICAgICAgIDxBZFNlcnZpbmdEYXRhPgogICAgICAgICAgICA8RGVsaXZlcnlEYXRhPgogICAgICAgICAgICAgIDxHZW9EYXRhPjwhW0NEQVRBW2N0PVVTJnN0PUFaJmFjPTQ4MCZ6cD04NTI4MiZidz00JmRtYT0xNzMmY2l0eT0xMzMwNV1dPjwvR2VvRGF0YT4KICAgICAgICAgICAgPC9EZWxpdmVyeURhdGE+CiAgICAgICAgICA8L0FkU2VydmluZ0RhdGE+CiAgICAgICAgPC9FeHRlbnNpb24+CiAgICAgIDwvRXh0ZW5zaW9ucz4KICAgIDwvSW5MaW5lPgogIDwvQWQ+CjwvVkFTVD4K","duration":37220442,"provider":"vast_3"}
+  {"account_id":"5132998201001","session_id":"3799e473b53d47c1a4aba1a96282ae63","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","live_app_id":"a51db89789e0413a87ee356bed6965b0","region":"us-west-2","kind":"SessionSummary","duration":51000000,"status_code":200,"timestamp":"2021-06-28T23:21:31.195Z","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-20063d6dae794906af1251c6948400db","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-20063d6dae794906af1251c6948400db-3799e473b53d47c1a4aba1a96282ae63","odur":32000000000,"rdur":32000000000,"sdur":34000000000,"ad_count":1,"client_only_tracking":false,"sls":false,"ads":[{"type":"midroll","fk":"qaads-subaru-dogtested","imps":[{"type":"AdStart","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression"},{"type":"AdFirstQuartile","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=firstQuartile"},{"type":"AdMidpoint","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=midpoint"},{"type":"AdThirdQuartile","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=thirdQuartile"},{"type":"AdComplete","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=complete"}],"cdur":30322000000}]}
+  {"account_id":"5132998201001","region":"us-west-2","kind":"Impression","impression_type":"AdStart","summary_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-20063d6dae794906af1251c6948400db-3799e473b53d47c1a4aba1a96282ae63","adbreak_id":"adBreak-c2ffdf12535b468fa4c88338824571f9-20063d6dae794906af1251c6948400db","live_account_id":"ee891cf3ebd340ff8ebe560cf292c40b","live_job_id":"c2ffdf12535b468fa4c88338824571f9","session_id":"3799e473b53d47c1a4aba1a96282ae63","live_app_id":"a51db89789e0413a87ee356bed6965b0","timestamp":"2021-06-28T23:21:31.197Z","url":"https://private-f7c49b-bcovqa.apiary-mock.com/api/tracking?event=impression","request_headers":{"Connection":"keep-alive","X-Forwarded-For":"50.207.17.164","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15","Referer":"https://playback-qa.a-live.io/c2ffdf12535b468fa4c88338824571f9/us-west-2/NA/a51db89789e0413a87ee356bed6965b0/playlist_ssaiM.m3u8"},"status_code":-1,"duration":106990529.99960259}
+  </code></pre>
+    </details>
+  </section>
+  <section class="bcls-section">
+    <h2 id="Log_fields">Log-Felder</h2>
+    <h3 id="Common_fields">Allgemeine Felder</h3>
+    <p>Alle Protokolltypen haben diese Felder gemeinsam.</p>
+    <table class="bcls-table">
+      <caption class="bcls-caption--table">Allgemeine Felder</caption>
+      <thead class="bcls-table__head">
+          <tr>
+              <th>Feld</th>
+              <th>Typ</th>
+              <th>Beschreibung</th>
+          </tr>
+      </thead>
+      <tbody class="bcls-table__body">
+          <tr>
+              <td><code translate="No">All log kinds share these fields</code></td>
+              <td>Schnur</td>
+              <td>Session-ID. Einzigartig pro Zuschauer.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">summary_id</code></td>
+              <td>Schnur</td>
+              <td>Sitzungszusammenfassungs-ID. Für VOD wie SessionID. Für Live, einmalig pro Sitzung pro Werbeunterbrechung.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">adbreak_id</code></td>
+              <td>Schnur</td>
+              <td>Werbeunterbrechungs-ID. Einzigartig pro Werbeunterbrechung</td>
+          </tr>
+          <tr>
+              <td><code translate="No">account_id</code></td>
+              <td>Schnur</td>
+              <td>Video Cloud-Konto-ID.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">live_account_id</code></td>
+              <td>Schnur</td>
+              <td>Live-Konto-ID.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">video_id</code></td>
+              <td>Schnur</td>
+              <td>Video Cloud Video ID.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">live_job_id</code></td>
+              <td>Schnur</td>
+              <td>Live-Job-ID.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">live_app_id</code></td>
+              <td>Schnur</td>
+              <td>Live-SSAI-Anwendungs-ID.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">title_id</code></td>
+              <td>Schnur</td>
+              <td>VOD-Titel-ID.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">kind</code></td>
+              <td>Schnur</td>
+              <td>Protokollart für dieses Protokoll. B. AdRequest, SessionSummary, Impression usw.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">timestamp</code></td>
+              <td>Schnur</td>
+              <td>Zeitstempel des Protokolls. In RFC3339-Format eingemarshallt. z.B. „2021-06-03T 11:39:22 .787Z“.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">span_id</code></td>
+              <td>Unit64</td>
+              <td>SpanID ist eine Trace-ID für dieses Protokoll.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">parent_span_id</code></td>
+              <td>Unit64</td>
+              <td>ParentSpanID verweist auf eine SpanID eines übergeordneten Protokolls. Dieser Wert kann nützlich sein, um der Kette von VAST-Wrapper-Aufrufen zu folgen.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">error</code></td>
+              <td>boolesch</td>
+              <td>True, wenn diesem Protokoll ein Fehler zugeordnet ist. Seine Bedeutung hängt von der Art des Protokolls ab.</td>
+          </tr>
+      </tbody>
+  </table>
+    <h3>HTTP-Felder</h3>
+    <p>Diese Felder werden von Protokolltypen gemeinsam genutzt, die für HTTP-Anforderungen an externe Dienste wie einen Anzeigenanbieter bestimmt sind.</p>
+    <p>Protokollarten mit HTTP-Feldern sind:</p>
+    <ul>
+      <li><a href="#AdRequest_fields">Anzeigenanfrage</a></li>
+      <li><a href="#Impression_fields">Eindruck</a></li>
+    </ul>
+    <table class="bcls-table">
+      <caption class="bcls-caption--table">HTTP-Felder</caption>
+      <thead class="bcls-table__head">
+          <tr>
+              <th>Feld</th>
+              <th>Typ</th>
+              <th>Beschreibung</th>
+          </tr>
+      </thead>
+      <tbody class="bcls-table__body">
+          <tr>
+              <td><code translate="No">url</code></td>
+              <td>Schnur</td>
+              <td>Anfrage-URL.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">request_headers</code></td>
+              <td>map[string][]string</td>
+              <td>Als Antwort erhaltene Header. Map mit Header-Namen für Schlüssel und Liste von Strings für Header-Werte.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">status_code</code></td>
+              <td>ganze Zahl</td>
+              <td>Antwortstatuscode.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">response_body</code></td>
+              <td>Schnur</td>
+              <td>Körper als Antwort erhalten. Base64 codiert.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">duration</code></td>
+              <td>integer64</td>
+              <td>Dauer der Anfrage in Nanosekunden.</td>
+          </tr>
+      </tbody>
+  </table>
+    <h3 id="SessionSummary_fields">SessionSummary-Felder</h3>
+    <p>Enthält eine Zusammenfassung der Anzeigenschaltungen für die Sitzung.</p>
+    <p>Beinhaltet <a href="#Common_fields">Allgemeine Felder</a>.</p>
+    <table class="bcls-table">
+      <caption class="bcls-caption--table">SessionSummary-Felder</caption>
+      <thead class="bcls-table__head">
+          <tr>
+              <th>Feld</th>
+              <th>Typ</th>
+              <th>Beschreibung</th>
+          </tr>
+      </thead>
+      <tbody class="bcls-table__body">
+          <tr>
+              <td><code translate="No">odur</code></td>
+              <td>integer64</td>
+              <td>OriginalDauer der Anzeigen, die eingefügt werden sollen. Der Wert wird in Nanosekunden angegeben.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">rdur</code></td>
+              <td>integer64</td>
+              <td>requestedDuration kann von OriginalDuration in Livestreams abweichen, je nachdem, wann die Sitzung während einer Werbeunterbrechung verbunden ist. Z. B. tritt Sitzung 10s in 30s Adbreak ein, Live fordert 20er Anzeigen an (odur=30, rdur=20). Der Wert wird in Nanosekunden angegeben.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">sdur</code></td>
+              <td>integer64</td>
+              <td>SubstitutedDuration ist die Dauer von Live-Chunks, die durch Anzeigen ersetzt werden. Dieser Wert kann je nach Dauer der vom Anbieter zurückgegebenen Anzeigen und falls Slate eingefügt wurde, von OriginalDuration abweichen.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">ad_count</code></td>
+              <td>ganze Zahl</td>
+              <td>Anzahl der eingefügten Anzeigen.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">ads</code></td>
+              <td>[]<a href="#AdSummary_fields">Anzeigenzusammenfassung</a></td>
+              <td>Liste mit Zusammenfassungen zu jeder eingefügten Anzeige.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">sls</code></td>
+              <td>boolesch</td>
+              <td>SLS ist wahr, wenn für die Werbeunterbrechung Live-SLS aktiviert ist.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">client_only_tracking</code></td>
+              <td>boolesch</td>
+              <td>ClientOnlyTracking ist wahr, wenn für die Werbeunterbrechung nur Live-Tracking für Kunden aktiviert ist.</td>
+          </tr>
+      </tbody>
+  </table>
+    <h3 id="AdSummary_fields">AdSummary-Felder</h3>
+    <table class="bcls-table">
+      <caption class="bcls-caption--table">AdSummary-Felder</caption>
+      <thead class="bcls-table__head">
+          <tr>
+              <th>Feld</th>
+              <th>Typ</th>
+              <th>Beschreibung</th>
+          </tr>
+      </thead>
+      <tbody class="bcls-table__body">
+          <tr>
+              <td><code translate="No">imps</code></td>
+              <td>[]<a href="#ImpressionSummary_fields">EindruckZusammenfassung</a></td>
+              <td></td>
+          </tr>
+          <tr>
+              <td><code translate="No">fk</code></td>
+              <td>Schnur</td>
+              <td>Fremdschlüssel des Motivs für diese Anzeige.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">type</code></td>
+              <td>Schnur</td>
+              <td>Anzeigentyp. zB Preroll, Midroll usw.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">cdur</code></td>
+              <td>integer64</td>
+              <td>CreativeDuration ist die Dauer dieser Anzeige. Der Wert wird in Nanosekunden angegeben.</td>
+          </tr>
+      </tbody>
+  </table>
+    <h3 id="ImpressionSummary_fields">ImpressionSummary-Felder</h3>
+    <table class="bcls-table">
+      <caption class="bcls-caption--table">ImpressionSummary-Felder</caption>
+      <thead class="bcls-table__head">
+          <tr>
+              <th>Feld</th>
+              <th>Typ</th>
+              <th>Beschreibung</th>
+          </tr>
+      </thead>
+      <tbody class="bcls-table__body">
+          <tr>
+              <td><code translate="No">type</code></td>
+              <td>Schnur</td>
+              <td>Eindruckstyp. zB AdStart, AdComplete usw.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">url</code></td>
+              <td>Schnur</td>
+              <td>URL, an die der Eindruck gesendet werden soll.</td>
+          </tr>
+      </tbody>
+  </table>
+    <h3 id="AdRequest_fields">AdRequest-Felder</h3>
+    <p>Enthält HTTP-Anforderungs- und -Antwortdaten mit dem Anzeigenanbieter.</p>
+    <p>Beinhaltet <a href="#Common_fields">Allgemeine Felder</a> und <a href="#HTTP_fields">HTTP-Felder</a></p>
+    <table class="bcls-table">
+      <caption class="bcls-caption--table">AdRequest-Felder</caption>
+      <thead class="bcls-table__head">
+          <tr>
+              <th>Feld</th>
+              <th>Typ</th>
+              <th>Beschreibung</th>
+          </tr>
+      </thead>
+      <tbody class="bcls-table__body">
+          <tr>
+              <td><code translate="No">provider</code></td>
+              <td>Schnur</td>
+              <td>Anzeigenanbietertyp. zB vast3, vmap usw.</td>
+          </tr>
+      </tbody>
+  </table>
+    <h3 id="Creative_fields">Kreativleistungen</h3>
+    <p>Enthält Informationen zum Anzeigenmotiv vom Anzeigenanbieter.</p>
+    <p>Beinhaltet <a href="#Common_fields">Allgemeine Felder</a>.</p>
+    <table class="bcls-table">
+      <caption class="bcls-caption--table">Kreativleistungen</caption>
+      <thead class="bcls-table__head">
+          <tr>
+              <th>Feld</th>
+              <th>Typ</th>
+              <th>Beschreibung</th>
+          </tr>
+      </thead>
+      <tbody class="bcls-table__body">
+          <tr>
+              <td><code translate="No">state</code></td>
+              <td>Schnur</td>
+              <td>Status des Creatives zum Zeitpunkt der Anfrage.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">fk</code></td>
+              <td>Schnur</td>
+              <td>Fremdschlüssel für Creative.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">record_id</code></td>
+              <td>Schnur</td>
+              <td>Wird von VOD verwendet.</td>
+          </tr>
+          <tr>
+              <td><code translate="No">source_url</code></td>
+              <td>Schnur</td>
+              <td>Quell-URL des Creatives.</td>
+          </tr>
+      </tbody>
+  </table>
+    <h3 id="Impression_fields">Impressionsfelder</h3>
+    <p>Alle Protokolltypen haben diese Felder gemeinsam.</p>
+    <p>Beinhaltet <a href="#Common_fields">Allgemeine Felder</a> und <a href="#HTTP_fields">HTTP-Felder</a>.</p>
+    <table class="bcls-table">
+      <caption class="bcls-caption--table">Impressionsfelder</caption>
+      <thead class="bcls-table__head">
+          <tr>
+              <th>Feld</th>
+              <th>Typ</th>
+              <th>Beschreibung</th>
+          </tr>
+      </thead>
+      <tbody class="bcls-table__body">
+          <tr>
+              <td><code translate="No">impression_type</code></td>
+              <td>Schnur</td>
+              <td>Eindruckstyp. zB AdStart, AdComplete usw.</td>
+          </tr>
+      </tbody>
+  </table>
+  </section>
+</article>

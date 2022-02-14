@@ -1,0 +1,344 @@
+---
+title: Layout des UX-Implementierungsleitfadens: Staging
+---
+ <h1>{{ page.title }}</h1>
+<article class="bcls-article">
+
+
+<section class="bcls-section" id="syntax">
+<h2>URL-Erstellung</h2>
+
+<h3>URL-Vorlagen</h3>
+
+<p>Brightcove Once UX verwendet eine proprietäre URL-Syntax, die auf der Once VOD-Technologie basiert, sodass die URL-Erstellung in ihrer Funktion den Standard-Once-URLs sehr ähnlich ist. Die einzigen Unterschiede bei der URL-Erstellung für Once UX sind ein aktualisierter Hostname und die Aufnahme von zwei zusätzlichen Variablen vor den typischen Variablen "Once DeliveryType" und "RequestedFileType" (siehe unten). Weitere Erläuterungen zur Erstellung von URLs finden Sie unter <a href="/node/17772#onceURLcreation">Erste Schritte mit Once: Einmalige URL-Erstellung</a>.</p>
+
+<h3 id="servingContentVariables">Inhaltsvariablen bereitstellen</h3>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Gastgeber</th>
+			<th>AdServiceFlag</th>
+			<th>AdServiceType</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td>onceux.unicornmedia.com</td>
+			<td>Anzeigen</td>
+			<td>vmap</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3>URL-Karte</h3>
+
+<p><code translate="no"><strong>Gastgeber</strong>/Service/<strong>AdServiceFlag</strong>/<strong>Anzeigendiensttyp</strong>/DeliveryType/RequestedFileType/DomainGUID/ApplicationGUID/MediaItemGUID/VirtualFileName.Extension</code></p>
+
+<h3>Beispiel</h3>
+
+<p><code translate="no">http://<strong>einmalux.unicornmedia.com</strong>/jetzt/<strong>Anzeigen</strong>/<strong>vmap</strong>/od/auto/4989f8db-9187-49ca-86ff-e2cd5342cd4/35217a08-d9db-469f-aec0-7c88406a0c60/63598604-cb88-44f8-bc47-d207af3b7b4a/content.once</code></p>
+</section>
+
+<section class="bcls-section" id="vmapAdAggregation">
+<h2>VMAP-Anzeigenaggregation</h2>
+
+<p>Das <a href="#servingContentVariables">oben bereitgestellte Inhaltsvariablen</a> for Once UX verwendet die Anzeigenaggregationsmethode des Dienstes. Diese Methode ruft eine Anzeigenplaylist aus Werten ab, die durch Zusammenfassen oder abgeleitet werden <em>aggregieren</em> die Daten zum Anzeigen von Anzeigen basierend auf Ihrer Anwendungsanleitung und Ihrem/Ihren konfigurierten Anzeigenserver(n). Beim Empfang der Once UX-Antwort stellt diese Methode Metadaten und ein VMAP-Objekt bereit, das die Anzeigenlast für die Anzeigesitzung des gesamten Assets enthält, die in VAST 3.0 normalisiert und dann in ein VMAP 1.0-XML-Objekt eingebettet wurde. Mit dieser VMAP-Antwort können Sie clientseitige Anzeigenfunktionen in Bezug auf die Nutzererfahrung (Anzeigenmotiv- oder Anzeigen-Pod-Countdowns, Ausblenden von Player-Steuerelementen), Beaconing und zusätzliche Motivtypen (Banner, Click-throughs und VPAID-Werbung) verarbeiten. Dieses VMAP-Objekt enthält auch ein Brightcove Once-XML-Objekt, das Brightcove Once-Daten und eine einmal eingefügte Once-URL enthält, die für die Wiedergabe verwendet werden soll. Siehe die <a href="#fullVMAPexample">Beispiel für eine VMAP-Beispielantwort</a> für mehr Informationen.</p>
+</section>
+
+<section class="bcls-section" id="DAP">
+<h2>Dynamische Anzeigenparameter</h2>
+
+<p>Once UX ermöglicht die Verwendung aller zulässigen dynamischen Anzeigenparameter (DAP) zum Auffüllen von Anzeigen- und Beacon-Aufrufen wie auf der Once-Plattform. Erläuterungen zu diesen Werten finden Sie unter <a href="/node/17772#DAP">Erste Schritte mit Once: Dynamische Anzeigenparameter</a>.</p>
+</section>
+
+<section class="bcls-section" id="queryParams">
+<h2>Parameter für Abfragezeichenfolgen</h2>
+
+<p>Once UX verwendet dieselben Abfragezeichenfolgenparameter wie die Once-Plattform. In diesem Abschnitt werden drei Parameter behandelt, die zur zusätzlichen Feinabstimmung der Once UX-Antwort und des Once UX-Verhaltens verwendet werden können. Bitte sehen Sie <a href="/node/17772#parameters">Erste Schritte mit Once: Parameter für Abfragezeichenfolgen</a> Weitere Informationen zu den anderen verfügbaren Abfragezeichenfolgenparametern.</p>
+
+<h4>Tracking-Ereignisse deaktivieren</h4>
+
+<p><code translate="no">UMTP={integer}</code></p>
+
+<p><code translate="no">UMTP</code> wird verwendet, um das standardmäßige serverseitige Brightcove-Anzeigenvideoimpressions- und Ereignisverfolgungsverhalten zu überschreiben oder zu deaktivieren.</p>
+
+<ul>
+	<li>UMTP = 0</li>
+</ul>
+
+<p>Standardmäßig sendet Brightcove im Auftrag des Clients / der Anwendung lineare Anzeigenvideoimpressionen und Verfolgungsereignisse an den Anzeigenserver. Wenn der Parameter explizit festgelegt ist, löst Once die Impressionen oder Tracking-Ereignisse nicht aus.</p>
+
+<h4>Ausgabe</h4>
+
+<p><code translate="no">ausgabe={integer}</code></p>
+
+<p>Dieses Schlüssel-Wert-Paar steuert das Objektformat der Antwort, die Brightcove zurückgibt. Standardmäßig antwortet Once UX mit XML. Daher sollte output = 1 verwendet werden, wenn eine JSON-Antwort gewünscht wird.</p>
+
+<ul>
+	<li>XML = 0</li>
+	<li>JSON = 1</li>
+</ul>
+
+<h4>Timedtextextension</h4>
+
+<p><code translate="no">timedtextension={extension}</code></p>
+
+<p>Wird verwendet, um den Ausgabebeschriftungstyp für timedtext adaptive/m3u8 und Once &lt;UO UO: TimedTextURL&gt; Responses zu ändern. Sobald UX ein Standard-Sidecar in einer DFXP-formatierten XML-Datei in der VMAP-Antwort für Player / Apps / Umgebungen bereitstellt, die möglicherweise nicht standardmäßig die Apple-Methode von webvtt verwenden können. Informationen zum Speicherort dieser Datei in VMAP-Antworten finden Sie im Beispiel für ein Once UX XML-Objekt.</p>
+
+<p>Die verfügbaren Erweiterungen sind:</p>
+
+<ul>
+	<li>srt</li>
+	<li>vtt (WebVTT)</li>
+	<li>xml (DFXP mit einer .xml-Erweiterung)</li>
+	<li>dfxp</li>
+</ul>
+</section>
+
+<section class="bcls-section" id="examples">
+<h2>VMAP-Beispiele und -Felder</h2>
+
+<p>Dieser Abschnitt behandelt die wichtigen Felder in VMAP-Antworten in Bezug auf Once UX. Diese Beispiele sind unterteilt in:</p>
+
+<ul>
+	<li><a href="#onceXMLobjectExample">Das Brightcove Once XML-Objekt</a></li>
+	<li><a href="#adbreakObjectSample">Ein AdBreak-Objekt</a></li>
+	<li><a href="#fullVMAPexample">Ein vollständiges Beispiel für eine VMAP-Antwort</a> Dazu gehören eine VPAID-Anzeige, eine Videoanzeige und eine Wrapper-Anzeige mit den Unterbrechungstypen PreRoll, MidRoll und PostRoll</li>
+</ul>
+
+<h3 id="onceXMLobjectExample">Beispiel für ein Brightcove Once XML-Objekt</h3>
+
+<pre class="line-numbers">
+<code class="language-xml">&lt;vmap:vmap xmlns:uo="uo“ xmlns:vmap=“ http://www.iab.net/vmap-1.0 "xmlns:xsi=“ http://www.w3.org/2001/XMLSchema-instance "version="1.0"&gt; &lt;vmap:Extensions&amp; gt; &lt;uo:UnicornOnce ttl="600" contenturi=“ http://api04-phx.unicornmedia.com/now/adaptive/m3u8/ab1dbc9b-9d90-4edb-b4ab-769e0049209b/2455340c-8dcd-412e-a917-c6fadfe268bd/0e627852-6eaa-4151-ab97-15e9a76835a7/content.m3u8?oasid=ae9fc045-da10-4801-9f23-f78115f6a11a&amp;&amp;umbeparambeaconkey1=co-ca-2113&amp;umbeparambeaconkey2=dragonfly "contentlength=&amp; quot; 378" payloadlength = „468" contextid="ae9fc045-da10-4801-9f23-f78115f6a11a“ /&gt; &lt;uo:Contentimpressions&gt; &lt;UO:UO:Impression url=“ http://tracking.adprovider.brightcoveapp.com/beacon/content/start "time="0"/&gt; &lt;/uo:contenTimPressions &gt; &lt;UO:RequestParameters&gt; &lt;uo:parameter key="value 1" value="owl“ /&gt; &lt;uo:parameter key="value2" value="city“ /&gt; &lt;/uo:RequestParameters &gt; &lt;uo:timedTextURL languageCode="de"&gt; &lt;! [CDATA [http://api206-phx.unicornmedia.com/tt/ab1dbc9b-9d90-4edb-b4ab-769e0049209b/0e627852-6eaa-4151-ab97-15e9a76835a7/0ffb96cc-3c92-4599-a818-82c1c1db7e46/en/content.xml]] &gt; &lt;/uo:timedTextURL &gt; &lt;/vMap:Extensions &gt;</code></pre>
+
+<h4>Erläuterung des Erweiterungsknotens</h4>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td><code translate="no">uo:UnicornOnce</code></td>
+			<td>Enthält Informationen zum Videoinhalt.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">uo:Contentimpressions</code></td>
+			<td>Wird für Anzeigenanfragen ausgefüllt, für die ein Content-Start-Beacon erforderlich ist.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">uo:RequestParameters</code></td>
+			<td>Brechen Sie aus den Anzeigenwerten aus, die in der Anzeigenanforderung von Once gesendet wurden.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">uo:TimeXturl</code></td>
+			<td>Informationen rund um die zeitgesteuerte Textbeschriftungsdatei.</td>
+		</tr>
+	</tbody>
+</table>
+
+<h4>uo: unicornOnce Node Erläuterung</h4>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td><code translate="no">ttl</code></td>
+			<td>Zeit bis zum Live-Wert in Sekunden für die Anzeigen, die in diese bestimmte Anfrage eingefügt wurden. Wenn die Anfrage außerhalb dieser Zeit gestellt wird, werden keine Anzeigen eingefügt. Die Empfehlung für bewährte Methoden besteht darin, die Once-UX-URL der obersten Ebene anzufordern, wenn ein Benutzer nach dem ttl wartet, um mit der Wiedergabe zu beginnen.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">contenturi</code></td>
+			<td>Einmal URL-Videoantwort, die an den Endbenutzer wiedergegeben werden soll. Enthält dynamisch eingefügte Anzeigen im angeforderten / festgelegten Format gemäß dem Standard-Once-Verhalten.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">inhaltlänge</code></td>
+			<td>Die Dauer des nicht monetisierten Basisvermögens in Sekunden.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">payloadlength</code></td>
+			<td>Die Dauer des monetisierten Basisvermögens in Sekunden. <strong>HINWEIS:</strong> Die VPAID-Dauer ist in diesem Wert nicht enthalten.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">kontextid</code></td>
+			<td>Eindeutiger Wert für den bestimmten zurückgegebenen Inhalt und die Anzeigennutzlast.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">oasid</code> (contenturi-Abfragezeichenfolge)</td>
+			<td>An die contenturi-URL angehängte Abfragezeichenfolge, die den Kontext-ID-Wert enthält, um bestimmte Inhalte und Anzeigennutzdaten für diese Anforderung anzugeben.</td>
+		</tr>
+	</tbody>
+</table>
+
+<h4>uo: contentImpressions Node Erläuterung</h4>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td><code translate="no">url</code></td>
+			<td>URL, die vom Player beim Start des Inhalts ausgelöst werden soll, wenn die serverseitige Verfolgung über umtp = 0 deaktiviert wurde. <strong>HINWEIS:</strong> SmartXML ist derzeit die einzige Anzeigenantwort, bei der dies unterstützt wird.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">Zeit</code></td>
+			<td>Zeit in Sekunden, zu der die contentImpression-URL ausgelöst werden soll. (Wird immer sein <code translate="no">0</code> da dies ausgelöst werden soll, wenn das Medium abgespielt wird).</td>
+		</tr>
+	</tbody>
+</table>
+
+<h4>uo: requestParameters Node Erläuterung</h4>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td><code translate="no">Schlüssel</code></td>
+			<td>Schlüssel des Schlüsselwertpaars beim Anruf beim Anzeigenanbieter</td>
+		</tr>
+		<tr>
+			<td><code translate="no">Wert</code></td>
+			<td>Wert des Schlüsselwertpaars beim Anruf beim Anzeigenanbieter</td>
+		</tr>
+	</tbody>
+</table>
+
+<h4>uo: timedTextURL Node Erläuterung</h4>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td><code translate="no">URL</code></td>
+			<td>Speicherort der Untertiteldatei dynamisch für die Anzeigeneinfügung manipuliert und im angeforderten Format zurückgegeben, wenn <code translate="no">Zeittextspanne</code></td>
+		</tr>
+		<tr>
+			<td><code translate="no">LanguageCode</code></td>
+			<td>Wenn bei der Asset-Erstellung angegeben, der ISO 639-1-Sprachcode</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3 id="adbreakObjectSample">Beispiel für ein AdBreak-Objekt</h3>
+
+<pre class="line-numbers">
+<code class="language-xml">&lt;vmap:AdBreak breakType="Linear“ breakid="Midroll_45_1" timeOffset=“ 00:00:45 .000"&gt; &lt;vmap:AdSource AllowMultipleads="True“ followRedirects="true&amp; quot; id="2"&gt; &lt;vmap:VastData&gt; &lt;VAST xmlns:xsd=“ http://www.w3.org/2001/XMLSchema "xmlns:xsi=“ http://www.w3.org/2001/XMLSchema-instance „&gt; &lt;Anzeige id="001"&gt; &lt;inline&gt; &lt;AdSystem&gt;Unbekannt&lt;/AdSystem &gt; &lt;AdTitle&gt;Unbekannt&lt;/adTitle &gt; &lt;Beschreibung /&gt; &lt;Impression id="unbekannt"&gt; http://tracking.adprovider.qa.unicornapp.com/beacon/Impression?id=adtracking&lt;/Impression &gt; &lt;Creatives&gt; &lt;Creative&gt; &lt;Linear&gt; &lt;Dauer&gt; 00:00:30 .0000000+ 00:00&lt;/Dauer &gt; &lt;TrackingEvents&gt; &lt;Tracking event="firstQuartile"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/firstQuartile&lt; &lt;/Tracking &gt; Ereignis verfolgen ="midpoint"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/midpoint&lt;/Tracking &gt; &lt;Tracking event="ThirdQuartile"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/thirdQuartile&lt; &lt;/Tracking &gt; Ereignis verfolgen ="complete"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/complete&lt; &lt;/Tracking &gt; Ereignis verfolgen ="stumm"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/mute&lt; &lt;/Tracking &gt; Ereignis verfolgen ="unmute"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/unmute&lt;/Tracking &gt; &lt;Verfolgen von event="collapse"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/collapse&lt; &lt;/Tracking &gt; Ereignis verfolgen ="expand"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/expand&lt; &lt;/Tracking &gt; Ereignis verfolgen ="pause"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/pause&lt; &lt;/Tracking &gt; Ereignis verfolgen ="resume"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/resume&lt;/Tracking &gt; &lt;Verfolgung event="rewind"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/rewind&lt; &lt;/Tracking &gt; Ereignis verfolgen ="AcceptInvitation"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/acceptinvitation&lt; &lt;/Tracking &gt; Ereignis verfolgen ="close"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/close&lt;/Tracking &gt; &lt;/trackingEvents &gt; &lt;VideoClicks&gt; &lt;ClickTracking id="unbekannt"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/clicktracking&lt;/ClickTracking &gt; &lt;/VideoClicks &gt; &lt;MediaFiles/&gt; &lt;/ Linear&gt; &lt;/Kreativ &gt; &lt;/Creatives &gt; &lt;/InLine &gt; &lt;/Anzeige &gt; &lt;/VAST &gt; &lt;/vmap:vastData &gt; &lt;/vmap:AdSource &gt; &lt;/vmap:AdBreak &gt;</code></pre>
+
+<h4>vmap: AdBreak Erläuterung: Felderklärung</h4>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td><code translate="no">vmap:AdSource</code></td>
+			<td>Identifiziert Werbeunterbrechungsattribute und fungiert als Container für <code translate="no">VASTDaten</code></td>
+		</tr>
+		<tr>
+			<td><code translate="no">vMap:VastData</code></td>
+			<td>Zeigt an, dass in der VMAP-Antwort eine VAST 3.0-Anzeigenantwort folgt</td>
+		</tr>
+	</tbody>
+</table>
+
+<h5>vmap: Erläuterung der AdBreak-Attribute</h5>
+
+<p><code translate="no">vmap:AdBreak</code> ist ein sich wiederholendes VMAP-Element, das Informationen enthält, die von Ihrem Anzeigenanbieter speziell für jede Werbung erhalten wurden. AdBreaks werden immer in chronologischer Reihenfolge für die Position der Anzeigenunterbrechung nach Zeit innerhalb des Inhalts (pre0, mid0, mid1, post0) und die Anzeigensequenz innerhalb einer Unterbrechung / eines Pods (ad0, ad1, ad2) sortiert.</p>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td><code translate="no">breakId</code></td>
+			<td>Die VMAP-Bezeichnung der Anzeige. Dieser Wert gibt den Unterbrechungstyp, den Unterbrechungsgruppentitel basierend auf dem Zeitversatz und den auf Null basierenden Zeitpositionswert der Unterbrechung an</td>
+		</tr>
+		<tr>
+			<td><code translate="no">TimeOffset</code></td>
+			<td>Zeitversatz vom Beginn des Basisvideoinhalts bis zur Platzierung der Werbeunterbrechung innerhalb des Basisvideoinhalts. Vor- und Nachrollpausen zeigen Zeitversätze von Start bzw. Ende an. Für Mid-Roll-Werbeunterbrechungen ist die <code translate="no">Zeitverschiebung</code> Der Wert muss mit einer kumulativen Dauer aller vor dieser bestimmten Pause angezeigten Anzeigen kombiniert werden, um eine genaue Pausenberechnung zu ermöglichen. Für Post-Roll-Werbeunterbrechungen ist der Beginn der Pause <code translate="no">Inhaltslänge</code> kombiniert mit einer kumulativen Dauer aller zuvor angezeigten Anzeigenmotive.</td>
+		</tr>
+	</tbody>
+</table>
+
+<h4>vmap: Erläuterung des AdSource-Attributs</h4>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td>id</td>
+			<td>Nullbasierter Aufzählungswert der Anzeigenanzahl im gesamten VMAP-Dokument</td>
+		</tr>
+	</tbody>
+</table>
+
+<h4>vmap: Erläuterung des VASTData-Felds</h4>
+
+<table class="bcls-table">
+	<thead class="bcls-table__head">
+		<tr>
+			<th>Knoten</th>
+			<th>Beschreibung</th>
+		</tr>
+	</thead>
+	<tbody class="bcls-table__body">
+		<tr>
+			<td><code translate="no">Eindruck</code></td>
+			<td>Tracking-URLs, die beim Anzeigenstart ausgelöst werden sollen, wenn serverseitiges Tracking deaktiviert wurde über <code translate="no">umtp=0</code></td>
+		</tr>
+		<tr>
+			<td><code translate="no">Dauer</code></td>
+			<td>Dauer eines bestimmten Anzeigenmotivs. <strong>HINWEIS:</strong> Die VPAID-Dauer wird anhand der Anzeigenantwort weitergeleitet.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">Verfolgung</code></td>
+			<td>Ereignis-Tracking-URLs, die zu geeigneten Zeiten ausgelöst werden, wenn serverseitiges Tracking deaktiviert wurde über <code translate="no">umtp=0</code>. <strong>HINWEIS:</strong> Alle Events außerhalb von Start, First Quartil, Midpoint, Third Quartil und Complete müssen <strong>immer</strong> von der gefeuert werden <code translate="no">Player/App/Umgebung</code>.</td>
+		</tr>
+		<tr>
+			<td><code translate="no">Media-Dateien</code></td>
+			<td>Passthrough-Speicherort für VPAID-Asset-Ressourcen. <strong>HINWEIS:</strong> Video Creative Media-Dateien sind im VMAP-Objekt nicht vorhanden, da diese Assets an der richtigen URL im Once XML-Objekt an den richtigen Speicherorten eingefügt werden.</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3 id="fullVMAPexample">Beispiel für eine vollständige VMAP-Antwort</h3>
+
+<pre class="line-numbers">
+<code class="language-xml">&lt;vmap:VMAP xmlns:uo="uo" xmlns:vmap="http://www.iab.net/vmap-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0"&gt;&lt; vmap:Erweiterungen&gt;&lt; uo:unicornOnce ttl="600" contenturi="http://api04-phx.unicornmedia.com/now/adaptive/m3u8/ab1dbc9b-9d90-4edb-b4ab-769e0049209b/2455340c-8dcd-412e-a917-c6fadfe268bd ./0e627852 -6eaa-4151-ab97-15e9a76835a7/content.m3u8?oasid=ae9fc045-da10-4801-9f23-f78115f6a11a&amp;&amp;umbeparambeaconkey1=co-ca-2113&amp;umbeparambeaconkey2=dragonfly" contentlength="378"c contextid45aef-9 4801-9f23-f78115f6a11a"/&gt;&lt; uo:requestParameter&gt;&lt; uo:parameter key="value1" value="eule"/&gt;&lt; uo:parameter key="value2" value="city"/&gt;&lt; /uo:requestParameter&gt;&lt; uo:timedTextURL languageCode="de"&gt;&lt; ![CDATA[ http://api206-phx.unicornmedia.com/tt/ab1dbc9b-9d90-4edb-b4ab-769e0049209b/0e627852-6eaa-4151-ab97-15e9a76835a7/0ffb96cc-3c92-4599-a818-82c1c1db7e46/de content.xml ]]&gt;&lt; /uo:timedTextURL&gt;&lt; /vmap:Erweiterungen&gt;&lt; vmap:AdBreak breakType="linear" breakId="PreRoll_0_0" timeOffset="start"&gt;&lt; vmap:AdSource allowMultipleAds="true" followRedirects="true" id="0"&gt;&lt; vmap:VASTData&gt;&lt; VAST xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;&lt; Anzeigen-ID="001"&gt;&lt; Im Einklang&gt;&lt; Anzeigensystem&gt; Unbekannt&lt; /AdSystem&gt;&lt; Anzeigentitel&gt; Unbekannt&lt; /Anzeigentitel&gt;&lt; Beschreibung /&gt;&lt; Impressions-ID="impr001"&gt; http://tracking.adprovider.qa.unicornapp.com/beacon/Impression?id=adtracking&lt; /Eindruck&gt;&lt; Kreative&gt;&lt; Kreativ&gt;&lt; Linear&gt;&lt; Dauer&gt; 00:00:30.0000000+00:00&lt; /Dauer&gt;&lt; TrackingEvents&gt;&lt; Tracking-Ereignis="firstQuartile"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/firstQuartile&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="Mittelpunkt"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/midpoint&lt; /Verfolgung&gt;&lt; Tracking-Ereignis = "thirdQuartile"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/thirdQuartile&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="complete"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/complete&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="mute"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/mute&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="unmute"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/unmute&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="collapse"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/collapse&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="erweitern"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/expand&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="pause"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/pause&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="resume"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/resume&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="zurückspulen"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/rewind&lt; /Verfolgung&gt;&lt; Tracking event="acceptInvitation"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/acceptinvitation&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="schließen"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/close&lt; /Verfolgung&gt;&lt; /TrackingEvents&gt;&lt; VideoKlicks&gt;&lt; ClickTracking-ID="unbekannt"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/clicktracking&lt; /ClickTracking&gt;&lt; /VideoKlicks&gt;&lt; Media-Dateien/&gt;&lt; /Linear&gt;&lt; /Kreativ&gt;&lt; /Motive&gt;&lt; /Im Einklang&gt;&lt; /Anzeige&gt;&lt; /GROSS&gt;&lt; /vmap:VASTData&gt;&lt; /vmap:Anzeigenquelle&gt;&lt; /vmap:AdBreak&gt;&lt; vmap:AdBreak breakType="linear" breakId="MidRoll_45_0" timeOffset="00:00:45.000"&gt;&lt; vmap:AdSource allowMultipleAds="true" followRedirects="true" id="1"&gt;&lt; vmap:VASTData&gt;&lt; VAST xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;&lt; Anzeigen-ID="vpaid"&gt;&lt; Im Einklang&gt;&lt; Anzeigensystem&gt; Unbekannt&lt; /AdSystem&gt;&lt; Anzeigentitel&gt; Unbekannt&lt; /Anzeigentitel&gt;&lt; Impressions-ID="Unbekannt"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/vpaid/impression&lt; /Eindruck&gt;&lt; Eindruck&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/vpaid/impression1&lt; /Eindruck&gt;&lt; Kreative&gt;&lt; Creative-ID="vpaid00A" Sequenz="1"&gt;&lt; Linear&gt;&lt; Dauer&gt; 00:01:30.0000000+00:00&lt; /Dauer&gt;&lt; TrackingEvents&gt;&lt; Tracking-Ereignis="firstQuartile"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/firstQuartile&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="Mittelpunkt"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/midpoint&lt; /Verfolgung&gt;&lt; Tracking-Ereignis = "thirdQuartile"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/thirdQuartile&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="complete"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/complete&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="mute"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/mute&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="unmute"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/unmute&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="collapse"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/collapse&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="erweitern"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/expand&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="pause"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/pause&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="resume"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/resume&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="zurückspulen"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/rewind&lt; /Verfolgung&gt;&lt; Tracking event="acceptInvitation"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/acceptinvitation&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="schließen"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/close&lt; /Verfolgung&gt;&lt; /TrackingEvents&gt;&lt; Anzeigenparameter&gt; Zeitstempel=1411773597&amp;adid=vpaid&lt; /Anzeigenparameter&gt;&lt; VideoKlicks&gt;&lt; Durchklicken /&gt;&lt; ClickTracking-ID="unbekannt"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/clicktracking&lt; /ClickTracking&gt;&lt; /VideoKlicks&gt;&lt; Media-Dateien&gt;&lt; MediaFile delivery="progressive" type="application/x-shockwave-flash" bitrate="" width="0" height="0"&gt; http://vpaid.adprovider.qa.brightcoveapp.com?advpaid_player.swf&lt; /Mediendatei&gt;&lt; /Media-Dateien&gt;&lt; /Linear&gt;&lt; /Kreativ&gt;&lt; Creative-ID="001" Sequenz="1"&gt;&lt; CompanionAds&gt;&lt; Companion width="728" height="90"&gt;&lt; HTML-Ressource&gt; http://iframe.adprovider.qa.brightcoveapp.com?value=1&lt; /HTML-Ressource&gt;&lt; /Begleiter&gt;&lt; Companion width="300" height="60"&gt;&lt; HTML-Ressource&gt; http://iframe.adprovider.qa.brightcoveapp.com?value=2&lt; /HTML-Ressource&gt;&lt; /Begleiter&gt;&lt; /CompanionAds&gt;&lt; /Kreativ&gt;&lt; Creative-ID="002" Sequenz="1"&gt;&lt; Nichtlineare Anzeigen&gt;&lt; TrackingEvents&gt;&lt; Tracking-Ereignis="firstQuartile"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/firstQuartile&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="Mittelpunkt"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/midpoint&lt; /Verfolgung&gt;&lt; Tracking-Ereignis = "thirdQuartile"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/thirdQuartile&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="complete"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/complete&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="mute"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/mute&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="unmute"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/unmute&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="collapse"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/collapse&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="erweitern"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/expand&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="pause"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/pause&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="resume"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/resume&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="zurückspulen"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/rewind&lt; /Verfolgung&gt;&lt; Tracking event="acceptInvitation"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/acceptinvitation&lt; /Verfolgung&gt;&lt; Tracking-Ereignis="schließen"&gt; http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/close&lt; /Verfolgung&gt;&lt; /TrackingEvents&gt;&lt; NonLinear id="" width="480" height="360" skalierbar="false" MaintainAspectRatio="false" minSuggestedDuration="00:00:30.0000000+00:00" /&gt;&lt; /NichtlineareAnzeigen&gt;&lt; /Kreativ&gt;&lt; /Motive&gt;&lt; /Im Einklang&gt;&lt; /Anzeige&gt;&lt; /GROSS&gt;&lt; /vmap:VASTData&gt;&lt; /vmap:Anzeigenquelle&gt;&lt; /vmap:AdBreak&gt;&lt; vmap:AdBreak breakType="linear" breakId="MidRoll_45_1" timeOffset="00:00:45.000"&gt;&lt; vmap:AdSource allowMultipleAds="true" followRedirects="true" id="2"&gt;&lt; vmap:VASTData&gt;&lt; VAST xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;&lt; Anzeigen-ID="001"&gt;&lt; Im Einklang&gt;&lt; Anzeigensystem&gt; Unbekannt&lt; /AdSystem&gt;&lt; Anzeigentitel&gt; Unbekannt&lt; /Anzeigentitel&gt;&lt;Description /&gt; &lt;Impression id="unknown"&gt;http://tracking.adprovider.qa.unicornapp.com/beacon/Impression?id=adtracking&lt;/Impression&gt; &lt;Creatives&gt; &lt;Creative&gt; &lt;Linear&gt; &lt;Duration&gt;00:00:30.0000000+00:00&lt;/Duration&gt; &lt;TrackingEvents&gt; &lt;Tracking event="firstQuartile"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/firstQuartile&lt;/Tracking&gt; &lt;Tracking event="midpoint"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/midpoint&lt;/Tracking&gt; &lt;Tracking event="thirdQuartile"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/thirdQuartile&lt;/Tracking&gt; &lt;Tracking event="complete"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/complete&lt;/Tracking&gt; &lt;Tracking event="mute"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/mute&lt;/Tracking&gt; &lt;Tracking event="unmute"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/unmute&lt;/Tracking&gt; &lt;Tracking event="collapse"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/collapse&lt;/Tracking&gt; &lt;Tracking event="expand"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/expand&lt;/Tracking&gt; &lt;Tracking event="pause"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/pause&lt;/Tracking&gt; &lt;Tracking event="resume"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/resume&lt;/Tracking&gt; &lt;Tracking event="rewind"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/rewind&lt;/Tracking&gt; &lt;Tracking event="acceptInvitation"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/acceptinvitation&lt;/Tracking&gt; &lt;Tracking event="close"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/close&lt;/Tracking&gt; &lt;/TrackingEvents&gt; &lt;VideoClicks&gt; &lt;ClickTracking id="unknown"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/clicktracking&lt;/ClickTracking&gt; &lt;/VideoClicks&gt; &lt;MediaFiles/&gt; &lt;/Linear&gt; &lt;/Creative&gt; &lt;/Creatives&gt; &lt;/InLine&gt; &lt;/Ad&gt; &lt;/VAST&gt; &lt;/vmap:VASTData&gt; &lt;/vmap:AdSource&gt; &lt;/vmap:AdBreak&gt; &lt;vmap:AdBreak breakType="linear" breakId="PostRoll_378_0" timeOffset="end"&gt; &lt;vmap:AdSource allowMultipleAds="true" followRedirects="true" id="3"&gt; &lt;vmap:VASTData&gt; &lt;VAST xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt; &lt;Ad id="bird"&gt; &lt;InLine&gt; &lt;AdSystem&gt;Unknown&lt;/AdSystem&gt; &lt;AdTitle&gt;Unknown&lt;/AdTitle&gt; &lt;Impression id="Unknown"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/impression&lt;/Impression&gt; &lt;Impression&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/impression1&lt;/Impression&gt; &lt;Impression&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/impression2&lt;/Impression&gt; &lt;Impression&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/impression3&lt;/Impression&gt; &lt;Creatives&gt; &lt;Creative AdID="bird"&gt; &lt;Linear&gt; &lt;Duration&gt;00:00:30.0000000+00:00&lt;/Duration&gt; &lt;TrackingEvents&gt; &lt;Tracking event="firstQuartile"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/firstQuartile&lt;/Tracking&gt; &lt;Tracking event="midpoint"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/midpoint&lt;/Tracking&gt; &lt;Tracking event="thirdQuartile"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/thirdQuartile&lt;/Tracking&gt; &lt;Tracking event="complete"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/complete&lt;/Tracking&gt; &lt;Tracking event="mute"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/mute&lt;/Tracking&gt; &lt;Tracking event="unmute"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/unmute&lt;/Tracking&gt; &lt;Tracking event="collapse"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/collapse&lt;/Tracking&gt; &lt;Tracking event="expand"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/expand&lt;/Tracking&gt; &lt;Tracking event="pause"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/pause&lt;/Tracking&gt; &lt;Tracking event="resume"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/resume&lt;/Tracking&gt; &lt;Tracking event="rewind"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/rewind&lt;/Tracking&gt; &lt;Tracking event="acceptInvitation"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/acceptinvitation&lt;/Tracking&gt; &lt;Tracking event="close"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/close&lt;/Tracking&gt; &lt;/TrackingEvents&gt; &lt;VideoClicks&gt; &lt;ClickTracking id="unknown"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/bird/clicktracking&lt;/ClickTracking&gt; &lt;/VideoClicks&gt; &lt;MediaFiles/&gt; &lt;/Linear&gt; &lt;/Creative&gt; &lt;Creative id="001" sequence="1"&gt; &lt;Linear&gt; &lt;Duration&gt;00:00:00.0000000+00:00&lt;/Duration&gt; &lt;TrackingEvents&gt; &lt;Tracking event="firstQuartile"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/firstQuartile&lt;/Tracking&gt; &lt;Tracking event="midpoint"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/midpoint&lt;/Tracking&gt; &lt;Tracking event="thirdQuartile"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/thirdQuartile&lt;/Tracking&gt; &lt;Tracking event="complete"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/complete&lt;/Tracking&gt; &lt;Tracking event="mute"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/mute&lt;/Tracking&gt; &lt;Tracking event="unmute"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/unmute&lt;/Tracking&gt; &lt;Tracking event="pause"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/pause&lt;/Tracking&gt; &lt;Tracking event="resume"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/resume&lt;/Tracking&gt; &lt;Tracking event="fullscreen"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/fullscreen&lt;/Tracking&gt; &lt;Tracking event="close"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/close&lt;/Tracking&gt; &lt;Tracking event="acceptInvitation"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/acceptInvitation&lt;/Tracking&gt; &lt;/TrackingEvents&gt; &lt;VideoClicks&gt; &lt;ClickTracking&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/clicktracking&lt;/ClickTracking&gt; &lt;/VideoClicks&gt; &lt;/Linear&gt; &lt;/Creative&gt; &lt;Creative id="002" sequence="2"&gt; &lt;CompanionAds&gt; &lt;Companion&gt; &lt;TrackingEvents&gt; &lt;Tracking event="creativeView"&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/creativeView&lt;/Tracking&gt; &lt;/TrackingEvents&gt; &lt;CompanionClickThrough&gt;http://tracking.adprovider.qa.brightcoveapp.com/beacon/wrapper/companionclickthrough&lt;/CompanionClickThrough&gt; &lt;/Companion&gt; &lt;/CompanionAds&gt; &lt;/Creative&gt; &lt;/Creatives&gt; &lt;Extensions&gt; &lt;Extension type="bird"&gt; &lt;AdServingData&gt; &lt;DeliveryData&gt; &lt;GeoData&gt;ct=US&amp;st=AZ&amp;ac=480&amp;zp=85282&amp;bw=4&amp;dma=173&amp;city=13305&lt;/GeoData&gt; &lt;/DeliveryData&gt; &lt;/AdServingData&gt; &lt;/Extension&gt; &lt;Extension type="wrapper"&gt; &lt;AdServingData&gt; &lt;DeliveryData&gt; &lt;GeoData&gt;ct=US&amp;st=AZ&amp;ac=480&amp;zp=85282&amp;bw=4&amp;dma=173&amp;city=13305&lt;/GeoData&gt; &lt;/DeliveryData&gt; &lt;/AdServingData&gt; &lt;/Extension&gt; &lt;/Extensions&gt; &lt;/InLine&gt; &lt;/Ad&gt; &lt;/VAST&gt; &lt;/vmap:VASTData&gt; &lt;/vmap:AdSource&gt; &lt;/vmap:AdBreak&gt; &lt;/vmap:VMAP&gt;</code></pre>
+</section>
+</article>
